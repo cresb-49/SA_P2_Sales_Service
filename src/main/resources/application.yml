@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: sales-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/sales_service
+    username: postgres
+    password: 201931012
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  profiles:
+    active: local
+  config:
+    import: "optional:configserver:http://localhost:8888"
