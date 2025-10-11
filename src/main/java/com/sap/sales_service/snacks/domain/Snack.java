@@ -17,7 +17,7 @@ public class Snack {
     private final LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    @Builder
+    @Builder(toBuilder = true)
     public Snack(UUID id, String name, BigDecimal price, String imageUrl, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id != null ? id : UUID.randomUUID();
         this.name = name;
