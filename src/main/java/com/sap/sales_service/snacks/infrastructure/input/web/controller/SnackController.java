@@ -9,6 +9,7 @@ import com.sap.sales_service.snacks.infrastructure.input.web.mappers.SnackRespon
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +28,7 @@ public class SnackController {
 
     private final SnackResponseMapper snackResponseMapper;
 
+    //Public endpoints
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(
             @PathVariable UUID id
@@ -37,6 +39,7 @@ public class SnackController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CINEMA_ADMIN')")
     public ResponseEntity<?> createSnack(
             @ModelAttribute CreateSnackRequestDTO requestDTO,
             @RequestPart("file") MultipartFile file
@@ -47,6 +50,7 @@ public class SnackController {
     }
 
     @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CINEMA_ADMIN')")
     public ResponseEntity<?> updateSnack(
             @PathVariable UUID id,
             @ModelAttribute UpdateSnackRequestDTO requestDTO,
@@ -57,6 +61,7 @@ public class SnackController {
         return ResponseEntity.ok(response);
     }
 
+    // Public endpoints
     @GetMapping
     public ResponseEntity<?> getAllSnacks(
             @RequestParam(defaultValue = "0") int page
@@ -66,6 +71,7 @@ public class SnackController {
         return ResponseEntity.ok(response);
     }
 
+    // Public endpoint to get snacks by name (partial match) with pagination
     @GetMapping("/search")
     public ResponseEntity<?> getSnacksByName(
             @RequestParam String name,
@@ -76,6 +82,7 @@ public class SnackController {
         return ResponseEntity.ok(response);
     }
 
+    // Public endpoint to get snacks by a list of ids
     @PostMapping("/ids")
     public ResponseEntity<?> getSnacksByIds(@RequestBody List<String> ids) {
         var snacks = findSnackPort.findByIds(ids);
