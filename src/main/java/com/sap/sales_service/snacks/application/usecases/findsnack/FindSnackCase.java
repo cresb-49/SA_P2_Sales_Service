@@ -1,5 +1,6 @@
 package com.sap.sales_service.snacks.application.usecases.findsnack;
 
+import com.sap.common_lib.exception.NotFoundException;
 import com.sap.sales_service.snacks.application.input.FindSnackPort;
 import com.sap.sales_service.snacks.application.ouput.FindingSnackPort;
 import com.sap.sales_service.snacks.domain.Snack;
@@ -21,7 +22,7 @@ public class FindSnackCase implements FindSnackPort {
     @Override
     public Snack findById(UUID id) {
         return findingSnackPort.findById(id)
-                .orElseThrow(() -> new RuntimeException("Snack not found"));
+                .orElseThrow(() -> new NotFoundException("Snack not found"));
     }
 
     @Override

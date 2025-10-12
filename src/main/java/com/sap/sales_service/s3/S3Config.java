@@ -1,4 +1,4 @@
-package com.sap.sales_service.config;
+package com.sap.sales_service.s3;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

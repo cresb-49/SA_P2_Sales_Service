@@ -33,12 +33,12 @@ public class CreateSnackCase implements CreateSnackPort {
     public Snack create(CreateSnackDTO createSnackDTO) {
         var now = String.valueOf(System.currentTimeMillis());
         if(createSnackDTO.file() == null || createSnackDTO.file().isEmpty()) {
-            throw new RuntimeException("File is required");
+            throw new IllegalArgumentException("File is required");
         }
         var originalFileName = createSnackDTO.file().getOriginalFilename();
         var extension = getExtensionNoDotLower(originalFileName);
         if(!extension.matches("^(png|jpg|jpeg|gif)$")) {
-            throw new RuntimeException("File must be png, jpg, jpeg or gif");
+            throw new IllegalArgumentException("File must be png, jpg, jpeg or gif");
         }
         //Create domain object
         var snack = Snack.builder()

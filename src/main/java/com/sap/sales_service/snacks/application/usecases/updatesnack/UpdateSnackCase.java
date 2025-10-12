@@ -1,5 +1,6 @@
 package com.sap.sales_service.snacks.application.usecases.updatesnack;
 
+import com.sap.common_lib.exception.NotFoundException;
 import com.sap.sales_service.snacks.application.input.UpdateSnackPort;
 import com.sap.sales_service.snacks.application.ouput.DeletingFilePort;
 import com.sap.sales_service.snacks.application.ouput.FindingSnackPort;
@@ -39,11 +40,11 @@ public class UpdateSnackCase implements UpdateSnackPort {
         var originalFileName = containsFile ? updateSnackDTO.file().getOriginalFilename() : null;
         var extension = containsFile ? getExtensionNoDotLower(originalFileName) : "";
         if (containsFile && !extension.matches("^(png|jpg|jpeg|gif)$")) {
-            throw new RuntimeException("File must be png, jpg, jpeg or gif");
+            throw new IllegalArgumentException("File must be png, jpg, jpeg or gif");
         }
         // Find existing snack
         var snack = findingSnackPort.findById(updateSnackDTO.id())
-                .orElseThrow(() -> new RuntimeException("Snack with id " + updateSnackDTO.id() + " does not exist"));
+                .orElseThrow(() -> new NotFoundException("Snack with id " + updateSnackDTO.id() + " does not exist"));
         var oldUrl = snack.getImageUrl();
         // Update fields
         snack.update(

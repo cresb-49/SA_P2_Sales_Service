@@ -1,6 +1,6 @@
 package com.sap.sales_service.snacks.infrastructure.output.bucket;
 
-import com.sap.sales_service.config.infrastructure.input.port.BucketGatewayPort;
+import com.sap.sales_service.s3.infrastructure.input.port.BucketGatewayPort;
 import com.sap.sales_service.snacks.application.ouput.DeletingFilePort;
 import com.sap.sales_service.snacks.application.ouput.SaveFilePort;
 import lombok.AllArgsConstructor;

@@ -36,22 +36,22 @@ public class Ticket {
 
     public void validate() {
         if (this.cinemaFunctionId == null) {
-            throw new RuntimeException("Cinema function ID cannot be null");
+            throw new IllegalArgumentException("Cinema function ID cannot be null");
         }
         if (this.cinemaId == null) {
-            throw new RuntimeException("Cinema ID cannot be null");
+            throw new IllegalArgumentException("Cinema ID cannot be null");
         }
         if (this.cinemaRoomId == null) {
-            throw new RuntimeException("Cinema room ID cannot be null");
+            throw new IllegalArgumentException("Cinema room ID cannot be null");
         }
         if (this.seatId == null) {
-            throw new RuntimeException("Seat ID cannot be null");
+            throw new IllegalArgumentException("Seat ID cannot be null");
         }
         if (this.userId == null) {
-            throw new RuntimeException("User ID cannot be null");
+            throw new IllegalArgumentException("User ID cannot be null");
         }
         if (this.cinemaFunctionPrice == null || this.cinemaFunctionPrice.compareTo(BigDecimal.ZERO) < 0) {
-            throw new RuntimeException("Cinema function price cannot be null or negative");
+            throw new IllegalArgumentException("Cinema function price cannot be null or negative");
         }
     }
 

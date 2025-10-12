@@ -1,4 +1,4 @@
-package com.sap.sales_service.config.infrastructure.input.port;
+package com.sap.sales_service.s3.infrastructure.input.port;
 
 import java.io.File;
 import java.io.IOException;

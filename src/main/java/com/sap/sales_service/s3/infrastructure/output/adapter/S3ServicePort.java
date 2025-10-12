@@ -1,4 +1,4 @@
-package com.sap.sales_service.config.infrastructure.output.adapter;
+package com.sap.sales_service.s3.infrastructure.output.adapter;
 
 import java.io.File;
 import java.io.IOException;

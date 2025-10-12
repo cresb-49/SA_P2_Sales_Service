@@ -44,15 +44,15 @@ public class Snack {
         if (changed) this.updatedAt = LocalDateTime.now();
     }
 
-    public void validate(){
-        if(this.name == null || this.name.isEmpty()){
-            throw new RuntimeException("Snack name cannot be null or empty");
+    public void validate() {
+        if (this.name == null || this.name.isEmpty()) {
+            throw new IllegalArgumentException("Snack name cannot be null or empty");
         }
-        if(this.price == null || this.price.compareTo(BigDecimal.ZERO) < 0){
-            throw new RuntimeException("Snack price cannot be null or negative");
+        if (this.price == null || this.price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Snack price cannot be null or negative");
         }
-        if(this.imageUrl == null || this.imageUrl.isEmpty()){
-            throw new RuntimeException("Snack imageUrl cannot be null or empty");
+        if (this.imageUrl == null || this.imageUrl.isEmpty()) {
+            throw new IllegalArgumentException("Snack imageUrl cannot be null or empty");
         }
     }
 }
