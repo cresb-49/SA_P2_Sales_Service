@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  config:
+    import: "optional:configserver:http://localhost:8888"
+    activate:
+      on-profile: prod
+
+aws:
+  s3:
+    access-key: ${AWS_ACCESS_KEY_ID}
+    secret-key: ${AWS_SECRET_ACCESS_KEY}
+  region: ${AWS_REGION}
+
+bucket:
+  name: ${S3_BUCKET_NAME}
+  directory: ${S3_BUCKET_DIRECTORY}
