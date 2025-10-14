@@ -17,3 +17,12 @@ aws:
 bucket:
   name: ${S3_BUCKET_NAME}
   directory: ${S3_BUCKET_DIRECTORY}
+
+eureka:
+  port: ${EUREKA_PORT}
+  host: ${EUREKA_HOST}
+  instance:
+    instance-id: ${spring.application.name}:${random.uuid}
+  client:
+    service-url:
+      defaultZone: http://${eureka.host}:${eureka.port}/eureka
