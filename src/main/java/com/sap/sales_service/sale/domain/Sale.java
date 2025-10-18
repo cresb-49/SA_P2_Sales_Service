@@ -1,5 +1,6 @@
 package com.sap.sales_service.sale.domain;
 
+import com.sap.common_lib.common.enums.sale.SaleStatusType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

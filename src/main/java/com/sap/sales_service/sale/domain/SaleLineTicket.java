@@ -1,5 +1,6 @@
 package com.sap.sales_service.sale.domain;
 
+import com.sap.common_lib.common.enums.sale.TicketStatusType;
 import com.sap.sales_service.sale.domain.dtos.TicketView;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

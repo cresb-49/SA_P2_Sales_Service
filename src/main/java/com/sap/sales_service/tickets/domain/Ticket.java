@@ -3,7 +3,6 @@ package com.sap.sales_service.tickets.domain;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -22,8 +21,8 @@ public class Ticket {
     private LocalDateTime updatedAt;
 
     public Ticket(
-            UUID saleLineTicketId, UUID cinemaFunctionId, UUID cinemaId, UUID cinemaRoomId, UUID seatId,
-            UUID userId, UUID movieId, BigDecimal cinemaFunctionPrice
+            UUID saleLineTicketId, UUID cinemaFunctionId, UUID cinemaId,
+            UUID cinemaRoomId, UUID seatId, UUID movieId
     ) {
         this.id = UUID.randomUUID();
         this.saleLineTicketId = saleLineTicketId;
@@ -35,24 +34,6 @@ public class Ticket {
         this.used = false;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
-    }
-
-    public void validate() {
-        if (this.cinemaFunctionId == null) {
-            throw new IllegalArgumentException("Cinema function ID cannot be null");
-        }
-        if (this.cinemaId == null) {
-            throw new IllegalArgumentException("Cinema ID cannot be null");
-        }
-        if (this.cinemaRoomId == null) {
-            throw new IllegalArgumentException("Cinema room ID cannot be null");
-        }
-        if (this.seatId == null) {
-            throw new IllegalArgumentException("Seat ID cannot be null");
-        }
-        if (this.movieId == null) {
-            throw new IllegalArgumentException("Movie ID cannot be null");
-        }
     }
 
     public void markAsUsed() {
