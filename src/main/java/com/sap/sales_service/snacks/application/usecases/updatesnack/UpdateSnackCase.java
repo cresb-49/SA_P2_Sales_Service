@@ -37,31 +37,40 @@ public class UpdateSnackCase implements UpdateSnackPort {
     public Snack update(UpdateSnackDTO updateSnackDTO) {
         var now = String.valueOf(System.currentTimeMillis());
         var containsFile = updateSnackDTO.file() != null && !updateSnackDTO.file().isEmpty();
+        var hasExternalUrl = updateSnackDTO.urlImage() != null && !updateSnackDTO.urlImage().isBlank();
         var originalFileName = containsFile ? updateSnackDTO.file().getOriginalFilename() : null;
         var extension = containsFile ? getExtensionNoDotLower(originalFileName) : "";
-        if (containsFile && !extension.matches("^(png|jpg|jpeg|gif)$")) {
+        if (containsFile && !hasExternalUrl && !extension.matches("^(png|jpg|jpeg|gif)$")) {
             throw new IllegalArgumentException("File must be png, jpg, jpeg or gif");
         }
-        // Find existing snack
         var snack = findingSnackPort.findById(updateSnackDTO.id())
                 .orElseThrow(() -> new NotFoundException("Snack with id " + updateSnackDTO.id() + " does not exist"));
         var oldUrl = snack.getImageUrl();
-        // Update fields
+        var oldIsExternal = snack.isExternalImage();
+        // Decidir NUEVA URL (si hay URL externa, gana; si no, si hay file, usa S3; si no, se queda igual)
+        var newUrl = hasExternalUrl
+                ? updateSnackDTO.urlImage()
+                : (containsFile ? calculateUrl(extension, now) : oldUrl);
+        var urlChanged = !newUrl.equals(oldUrl);
+        // Actualizar campos
         snack.update(
                 updateSnackDTO.name(),
                 updateSnackDTO.price(),
-                containsFile ? calculateUrl(snack, extension, now) : oldUrl
+                urlChanged ? hasExternalUrl : oldIsExternal, // si cambió y viene externa => true
+                urlChanged ? newUrl : oldUrl
         );
-        //Validate snack
+        // Validaciones de dominio
         snack.validate();
-        //Save file if there is a new one and delete old one
-        if (containsFile) {
-            // Fist upload new file and if it works, delete old file
+        // Si se usará archivo (no externo) y la URL cambió => SUBIR primero
+        if (!hasExternalUrl && containsFile && urlChanged) {
             saveFile(snack, updateSnackDTO.file(), extension, now);
+        }
+        var saved = saveSnackPort.save(snack);
+        // Si cambió la URL y el anterior era local, BORRAR archivo viejo
+        if (urlChanged && !oldIsExternal && oldUrl != null && !oldUrl.isBlank()) {
             deleteFile(oldUrl);
         }
-        //Save snack
-        return saveSnackPort.save(snack);
+        return saved;
     }
 
     private String getExtensionWithDot(String name) {
@@ -78,8 +87,8 @@ public class UpdateSnackCase implements UpdateSnackPort {
         return withDot.isEmpty() ? "" : withDot.substring(1).toLowerCase(); // sin punto y en minúsculas
     }
 
-    private String calculateUrl(Snack snack, String extension, String now) {
-        var fileName = String.format("snack_%s_%s.%s", snack.getId(), now, extension);
+    private String calculateUrl(String extension, String now) {
+        var fileName = String.format("snack_%s.%s", now, extension);
         return String.format("https://%s.s3.%s.amazonaws.com/%s/%s", bucketName, awsRegion, bucketDirectory, fileName);
     }
 
@@ -88,7 +97,7 @@ public class UpdateSnackCase implements UpdateSnackPort {
             saveFilePort.uploadFile(
                     bucketName,
                     bucketDirectory,
-                    String.format("snack_%s_%s.%s", snack.getId(), now, extension),
+                    String.format("snack_%s.%s",now, extension),
                     file.getBytes()
             );
         } catch (Exception e) {

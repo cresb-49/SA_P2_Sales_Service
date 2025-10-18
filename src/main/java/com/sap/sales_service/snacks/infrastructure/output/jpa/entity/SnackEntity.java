@@ -21,15 +21,21 @@ import java.util.UUID;
 @Setter
 public class SnackEntity {
     @Id
-    private  UUID id;
+    private UUID id;
+    @Column(nullable = false)
+    private UUID cinemaId;
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
     private BigDecimal price;
     @Column(nullable = false)
+    private boolean externalImage;
+    @Column(nullable = false)
     private String imageUrl;
     @Column(nullable = false)
-    private  LocalDateTime createdAt;
+    private boolean active;
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 }

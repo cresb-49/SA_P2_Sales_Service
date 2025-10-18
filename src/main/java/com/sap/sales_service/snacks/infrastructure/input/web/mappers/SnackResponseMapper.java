@@ -1,7 +1,7 @@
 package com.sap.sales_service.snacks.infrastructure.input.web.mappers;
 
 import com.sap.sales_service.snacks.domain.Snack;
-import com.sap.sales_service.snacks.infrastructure.input.web.dtos.SnackResponseDTO;
+import com.sap.common_lib.dto.response.sales.SnackResponseDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -18,9 +18,11 @@ public class SnackResponseMapper {
         }
         return new SnackResponseDTO(
                 snack.getId(),
+                snack.getCinemaId(),
                 snack.getName(),
                 snack.getPrice(),
                 snack.getImageUrl(),
+                snack.isActive(),
                 snack.getCreatedAt(),
                 snack.getUpdatedAt()
         );

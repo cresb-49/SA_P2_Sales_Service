@@ -9,6 +9,7 @@ public record UpdateSnackDTO(
         UUID id,
         String name,
         BigDecimal price,
+        String urlImage,
         MultipartFile file
 ) {
 }

@@ -18,15 +18,19 @@ public class Sale {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime paidAt;
-    private List<SaleLine> saleLines;
+    private List<SaleLineSnack> saleLineSnacks;
+    private List<SaleLineTicket> saleLineTickets;
 
-    public Sale(UUID clientId, List<SaleLine> saleLines) {
+    public Sale(UUID clientId, List<SaleLineSnack> saleLineSnacks, List<SaleLineTicket> saleLineTickets) {
         this.id = UUID.randomUUID();
         this.clientId = clientId;
-        this.saleLines = saleLines;
-        this.totalAmount = saleLines.stream()
-                .map(SaleLine::getTotalPrice)
+        var amountFromTickets = saleLineTickets.stream()
+                .map(SaleLineTicket::getTotalPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+        var amountFromSnacks = saleLineSnacks.stream()
+                .map(SaleLineSnack::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        this.totalAmount = amountFromTickets.add(amountFromSnacks);
         this.status = SaleStatusType.PENDING;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
@@ -37,10 +41,7 @@ public class Sale {
         if (clientId == null) {
             throw new IllegalArgumentException("Client ID cannot be null");
         }
-        if (saleLines == null || saleLines.isEmpty()) {
-            throw new IllegalArgumentException("Sale must have at least one sale line");
-        }
-        for (SaleLine line : saleLines) {
+        for (SaleLineSnack line : saleLineSnacks) {
             line.validate();
         }
         if (totalAmount.compareTo(BigDecimal.ZERO) < 0) {

@@ -5,7 +5,6 @@ import com.sap.sales_service.snacks.application.ouput.SaveFilePort;
 import com.sap.sales_service.snacks.application.ouput.SaveSnackPort;
 import com.sap.sales_service.snacks.application.usecases.createsnack.dtos.CreateSnackDTO;
 import com.sap.sales_service.snacks.domain.Snack;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -32,26 +31,31 @@ public class CreateSnackCase implements CreateSnackPort {
     @Override
     public Snack create(CreateSnackDTO createSnackDTO) {
         var now = String.valueOf(System.currentTimeMillis());
-        if(createSnackDTO.file() == null || createSnackDTO.file().isEmpty()) {
+        var hasExternalUrl = createSnackDTO.urlImage() != null && !createSnackDTO.urlImage().isBlank();
+        if ((createSnackDTO.file() == null || createSnackDTO.file().isEmpty()) && !hasExternalUrl) {
             throw new IllegalArgumentException("File is required");
         }
-        var originalFileName = createSnackDTO.file().getOriginalFilename();
+        var originalFileName = createSnackDTO.file() != null ? createSnackDTO.file().getOriginalFilename() : "";
         var extension = getExtensionNoDotLower(originalFileName);
-        if(!extension.matches("^(png|jpg|jpeg|gif)$")) {
+        if (!extension.matches("^(png|jpg|jpeg|gif)$") && !hasExternalUrl) {
             throw new IllegalArgumentException("File must be png, jpg, jpeg or gif");
         }
-        //Create domain object
-        var snack = Snack.builder()
-                .name(createSnackDTO.name())
-                .price(createSnackDTO.price())
-                .build();
         // Process file and assign url
-        var url = calculateUrl(snack, extension, now);
-        snack = snack.toBuilder().imageUrl(url).build();
+        var url = hasExternalUrl ? createSnackDTO.urlImage() : calculateUrl(extension, now);
+        //Create domain object
+        var snack = new Snack(
+                createSnackDTO.cinemaId(),
+                createSnackDTO.name(),
+                createSnackDTO.price(),
+                hasExternalUrl,
+                url
+        );
         //Validate snack
         snack.validate();
         //Save file
-        saveFile(snack, createSnackDTO.file(), extension, now);
+        if (!hasExternalUrl) {
+            saveFile(createSnackDTO.file(), extension, now);
+        }
         //Save snack
         return saveSnackPort.save(snack);
     }
@@ -70,17 +74,17 @@ public class CreateSnackCase implements CreateSnackPort {
         return withDot.isEmpty() ? "" : withDot.substring(1).toLowerCase(); // sin punto y en minúsculas
     }
 
-    private String calculateUrl(Snack snack, String extension, String now) {
-        var fileName = String.format("snack_%s_%s.%s", snack.getId(), now, extension);
+    private String calculateUrl(String extension, String now) {
+        var fileName = String.format("snack_%s.%s", now, extension);
         return String.format("https://%s.s3.%s.amazonaws.com/%s/%s", bucketName, awsRegion, bucketDirectory, fileName);
     }
 
-    private void saveFile(Snack snack, MultipartFile file, String extension, String now){
+    private void saveFile(MultipartFile file, String extension, String now) {
         try {
             saveFilePort.uploadFile(
                     bucketName,
                     bucketDirectory,
-                    String.format("snack_%s_%s.%s", snack.getId(), now, extension),
+                    String.format("snack_%s.%s", now, extension),
                     file.getBytes()
             );
         } catch (Exception e) {

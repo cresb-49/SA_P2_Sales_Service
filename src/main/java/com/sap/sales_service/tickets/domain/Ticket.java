@@ -10,24 +10,31 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 public class Ticket {
-    private UUID id;
-    private UUID cinemaFunctionId;
-    private UUID cinemaId;
-    private UUID cinemaRoomId;
-    private UUID seatId;
-    private UUID userId;
-    private BigDecimal cinemaFunctionPrice;
+    private final UUID id;
+    private final UUID ticketRequestId;
+    private final UUID cinemaFunctionId;
+    private final UUID cinemaId;
+    private final UUID cinemaRoomId;
+    private final UUID seatId;
+    private final UUID userId;
+    private final UUID movieId;
+    private final BigDecimal cinemaFunctionPrice;
     private TicketStatusType status;
-    private LocalDateTime createdAt;
+    private final LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public Ticket(UUID cinemaFunctionId, UUID cinemaId, UUID cinemaRoomId, UUID seatId, UUID userId, BigDecimal cinemaFunctionPrice) {
+    public Ticket(
+            UUID ticketRequestId, UUID cinemaFunctionId, UUID cinemaId, UUID cinemaRoomId, UUID seatId,
+            UUID userId, UUID movieId, BigDecimal cinemaFunctionPrice
+    ) {
         this.id = UUID.randomUUID();
+        this.ticketRequestId = ticketRequestId;
         this.cinemaFunctionId = cinemaFunctionId;
         this.cinemaId = cinemaId;
         this.cinemaRoomId = cinemaRoomId;
         this.seatId = seatId;
         this.userId = userId;
+        this.movieId = movieId;
         this.cinemaFunctionPrice = cinemaFunctionPrice;
         this.status = TicketStatusType.RESERVED;
         this.createdAt = LocalDateTime.now();
@@ -37,6 +44,9 @@ public class Ticket {
     public void validate() {
         if (this.cinemaFunctionId == null) {
             throw new IllegalArgumentException("Cinema function ID cannot be null");
+        }
+        if (this.ticketRequestId == null) {
+            throw new IllegalArgumentException("Ticket request ID cannot be null");
         }
         if (this.cinemaId == null) {
             throw new IllegalArgumentException("Cinema ID cannot be null");
@@ -49,6 +59,9 @@ public class Ticket {
         }
         if (this.userId == null) {
             throw new IllegalArgumentException("User ID cannot be null");
+        }
+        if (this.movieId == null) {
+            throw new IllegalArgumentException("Movie ID cannot be null");
         }
         if (this.cinemaFunctionPrice == null || this.cinemaFunctionPrice.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("Cinema function price cannot be null or negative");

@@ -15,9 +15,12 @@ public class SnackMapper {
         }
         return new Snack(
                 entity.getId(),
+                entity.getCinemaId(),
                 entity.getName(),
                 entity.getPrice(),
+                entity.isExternalImage(),
                 entity.getImageUrl(),
+                entity.isActive(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );
@@ -29,9 +32,12 @@ public class SnackMapper {
         }
         return new SnackEntity(
                 snack.getId(),
+                snack.getCinemaId(),
                 snack.getName(),
                 snack.getPrice(),
+                snack.isExternalImage(),
                 snack.getImageUrl(),
+                snack.isActive(),
                 snack.getCreatedAt(),
                 snack.getUpdatedAt()
         );
