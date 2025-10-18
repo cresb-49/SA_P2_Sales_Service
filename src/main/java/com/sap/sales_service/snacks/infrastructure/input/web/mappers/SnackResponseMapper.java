@@ -1,7 +1,7 @@
 package com.sap.sales_service.snacks.infrastructure.input.web.mappers;
 
-import com.sap.sales_service.snacks.domain.Snack;
 import com.sap.common_lib.dto.response.sales.SnackResponseDTO;
+import com.sap.sales_service.snacks.domain.Snack;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
