@@ -1,6 +1,8 @@
 package com.sap.sales_service.snacks.application.usecases.createsnack;
 
+import com.sap.common_lib.util.FileExtensionUtils;
 import com.sap.sales_service.snacks.application.input.CreateSnackPort;
+import com.sap.sales_service.snacks.application.ouput.FindingSnackPort;
 import com.sap.sales_service.snacks.application.ouput.SaveFilePort;
 import com.sap.sales_service.snacks.application.ouput.SaveSnackPort;
 import com.sap.sales_service.snacks.application.usecases.createsnack.dtos.CreateSnackDTO;
@@ -26,17 +28,25 @@ public class CreateSnackCase implements CreateSnackPort {
     private String awsRegion;
 
     private final SaveSnackPort saveSnackPort;
+    private final FindingSnackPort findingSnackPort;
     private final SaveFilePort saveFilePort;
 
     @Override
     public Snack create(CreateSnackDTO createSnackDTO) {
+        // Find snack by like name in the same cinema
+        findingSnackPort.findLikeNameAndCinemaId(
+                createSnackDTO.name(),
+                createSnackDTO.cinemaId()
+        ).ifPresent(s -> {
+            throw new IllegalArgumentException("Snack with name " + createSnackDTO.name() + " already exists in the cinema");
+        });
         var now = String.valueOf(System.currentTimeMillis());
         var hasExternalUrl = createSnackDTO.urlImage() != null && !createSnackDTO.urlImage().isBlank();
         if ((createSnackDTO.file() == null || createSnackDTO.file().isEmpty()) && !hasExternalUrl) {
             throw new IllegalArgumentException("File is required");
         }
         var originalFileName = createSnackDTO.file() != null ? createSnackDTO.file().getOriginalFilename() : "";
-        var extension = getExtensionNoDotLower(originalFileName);
+        var extension = FileExtensionUtils.getExtensionNoDotLower(originalFileName);
         if (!extension.matches("^(png|jpg|jpeg|gif)$") && !hasExternalUrl) {
             throw new IllegalArgumentException("File must be png, jpg, jpeg or gif");
         }
@@ -58,20 +68,6 @@ public class CreateSnackCase implements CreateSnackPort {
         }
         //Save snack
         return saveSnackPort.save(snack);
-    }
-
-    private String getExtensionWithDot(String name) {
-        if (name == null) return "";
-        String trimmed = name.trim();
-        int lastDot = trimmed.lastIndexOf('.');
-        // No punto o el punto es el primer char (dotfile) -> sin extensión "convencional"
-        if (lastDot <= 0 || lastDot == trimmed.length() - 1) return "";
-        return trimmed.substring(lastDot); // incluye el punto
-    }
-
-    private String getExtensionNoDotLower(String name) {
-        String withDot = getExtensionWithDot(name);
-        return withDot.isEmpty() ? "" : withDot.substring(1).toLowerCase(); // sin punto y en minúsculas
     }
 
     private String calculateUrl(String extension, String now) {

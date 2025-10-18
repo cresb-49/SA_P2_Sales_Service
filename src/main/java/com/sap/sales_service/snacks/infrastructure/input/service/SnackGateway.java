@@ -27,7 +27,7 @@ public class SnackGateway implements SnackGatewayPort {
     }
 
     @Override
-    public List<SnackInternalView> findByIds(List<String> ids) {
+    public List<SnackInternalView> findByIds(List<UUID> ids) {
         var domains = snackJpaAdapter.findByIds(ids);
         return snackInternalViewMapper.toListView(domains);
     }

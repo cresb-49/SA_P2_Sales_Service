@@ -4,6 +4,7 @@ import com.sap.common_lib.exception.NotFoundException;
 import com.sap.sales_service.snacks.application.input.FindSnackPort;
 import com.sap.sales_service.snacks.application.ouput.FindingSnackPort;
 import com.sap.sales_service.snacks.domain.Snack;
+import com.sap.sales_service.snacks.domain.SnackFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -26,17 +27,12 @@ public class FindSnackCase implements FindSnackPort {
     }
 
     @Override
-    public Page<Snack> findAll(int page) {
-        return findingSnackPort.findAll(page);
+    public Page<Snack> search(SnackFilter snackFilter, int page) {
+        return findingSnackPort.searchByFilter(snackFilter, page);
     }
 
     @Override
-    public Page<Snack> findLikeName(String name, int page) {
-        return findingSnackPort.findLikeName(name, page);
-    }
-
-    @Override
-    public List<Snack> findByIds(List<String> ids) {
+    public List<Snack> findByIds(List<UUID> ids) {
         return findingSnackPort.findByIds(ids);
     }
 }

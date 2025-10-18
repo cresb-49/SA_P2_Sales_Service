@@ -3,6 +3,7 @@ package com.sap.sales_service.snacks.infrastructure.input.web.controller;
 import com.sap.sales_service.snacks.application.input.CreateSnackPort;
 import com.sap.sales_service.snacks.application.input.FindSnackPort;
 import com.sap.sales_service.snacks.application.input.UpdateSnackPort;
+import com.sap.sales_service.snacks.domain.SnackFilter;
 import com.sap.sales_service.snacks.infrastructure.input.web.dtos.CreateSnackRequestDTO;
 import com.sap.sales_service.snacks.infrastructure.input.web.dtos.UpdateSnackRequestDTO;
 import com.sap.sales_service.snacks.infrastructure.input.web.mappers.SnackResponseMapper;
@@ -29,7 +30,7 @@ public class SnackController {
     private final SnackResponseMapper snackResponseMapper;
 
     //Public endpoints
-    @GetMapping("/{id}")
+    @GetMapping("/public/{id}")
     public ResponseEntity<?> getById(
             @PathVariable UUID id
     ) {
@@ -42,7 +43,7 @@ public class SnackController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('CINEMA_ADMIN')")
     public ResponseEntity<?> createSnack(
             @ModelAttribute CreateSnackRequestDTO requestDTO,
-            @RequestPart("file") MultipartFile file
+            @RequestPart(name = "file", required = false) MultipartFile file
     ) {
         var snack = createSnackPort.create(requestDTO.toDomain(file));
         var response = snackResponseMapper.toResponse(snack);
@@ -54,39 +55,45 @@ public class SnackController {
     public ResponseEntity<?> updateSnack(
             @PathVariable UUID id,
             @ModelAttribute UpdateSnackRequestDTO requestDTO,
-            @RequestPart("file") MultipartFile file
+            @RequestPart(name = "file", required = false) MultipartFile file
     ) {
         var snack = updateSnackPort.update(requestDTO.toDomain(id, file));
         var response = snackResponseMapper.toResponse(snack);
         return ResponseEntity.ok(response);
     }
 
-    // Public endpoints
-    @GetMapping
-    public ResponseEntity<?> getAllSnacks(
-            @RequestParam(defaultValue = "0") int page
-    ) {
-        var snacks = findSnackPort.findAll(page);
-        var response = snackResponseMapper.toPageResponse(snacks);
-        return ResponseEntity.ok(response);
-    }
-
     // Public endpoint to get snacks by name (partial match) with pagination
-    @GetMapping("/search")
+    @GetMapping("/public/search")
     public ResponseEntity<?> getSnacksByName(
-            @RequestParam String name,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Boolean active,
+            @RequestParam(required = false) UUID cinemaId,
             @RequestParam(defaultValue = "0") int page
     ) {
-        var snacks = findSnackPort.findLikeName(name, page);
+        var filter = new SnackFilter(name, active, cinemaId);
+        var snacks = findSnackPort.search(filter, page);
         var response = snackResponseMapper.toPageResponse(snacks);
         return ResponseEntity.ok(response);
     }
 
     // Public endpoint to get snacks by a list of ids
-    @PostMapping("/ids")
-    public ResponseEntity<?> getSnacksByIds(@RequestBody List<String> ids) {
+    @PostMapping("/public/ids")
+    public ResponseEntity<?> getSnacksByIds(@RequestBody List<UUID> ids) {
         var snacks = findSnackPort.findByIds(ids);
         var response = snackResponseMapper.toListResponse(snacks);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/public/cinema/{cinemaId}")
+    public ResponseEntity<?> getSnacksByCinemaId(
+            @PathVariable UUID cinemaId,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Boolean active,
+            @RequestParam(defaultValue = "0") int page
+    ) {
+        var filter = new SnackFilter(name, active, cinemaId);
+        var snacks = findSnackPort.search(filter, page);
+        var response = snackResponseMapper.toPageResponse(snacks);
         return ResponseEntity.ok(response);
     }
 }

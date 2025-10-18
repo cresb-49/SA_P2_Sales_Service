@@ -9,5 +9,5 @@ import java.util.UUID;
 public interface SnackGatewayPort {
     Optional<SnackInternalView> findById(UUID id);
 
-    List<SnackInternalView> findByIds(List<String> ids);
+    List<SnackInternalView> findByIds(List<UUID> ids);
 }

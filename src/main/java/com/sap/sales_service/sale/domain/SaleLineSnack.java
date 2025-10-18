@@ -1,5 +1,6 @@
 package com.sap.sales_service.sale.domain;
 
+import com.sap.sales_service.sale.domain.dtos.SnackView;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -15,6 +16,9 @@ public class SaleLineSnack {
     private Integer quantity;
     private BigDecimal unitPrice;
     private BigDecimal totalPrice;
+
+    // View information of snack if exists
+    private SnackView snackView;
 
     public SaleLineSnack(UUID saleId, UUID snackId, Integer quantity, BigDecimal unitPrice) {
         this.id = UUID.randomUUID();

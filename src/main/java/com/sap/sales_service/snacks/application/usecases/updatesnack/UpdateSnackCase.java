@@ -1,6 +1,7 @@
 package com.sap.sales_service.snacks.application.usecases.updatesnack;
 
 import com.sap.common_lib.exception.NotFoundException;
+import com.sap.common_lib.util.FileExtensionUtils;
 import com.sap.sales_service.snacks.application.input.UpdateSnackPort;
 import com.sap.sales_service.snacks.application.ouput.DeletingFilePort;
 import com.sap.sales_service.snacks.application.ouput.FindingSnackPort;
@@ -39,7 +40,7 @@ public class UpdateSnackCase implements UpdateSnackPort {
         var containsFile = updateSnackDTO.file() != null && !updateSnackDTO.file().isEmpty();
         var hasExternalUrl = updateSnackDTO.urlImage() != null && !updateSnackDTO.urlImage().isBlank();
         var originalFileName = containsFile ? updateSnackDTO.file().getOriginalFilename() : null;
-        var extension = containsFile ? getExtensionNoDotLower(originalFileName) : "";
+        var extension = containsFile ? FileExtensionUtils.getExtensionNoDotLower(originalFileName) : "";
         if (containsFile && !hasExternalUrl && !extension.matches("^(png|jpg|jpeg|gif)$")) {
             throw new IllegalArgumentException("File must be png, jpg, jpeg or gif");
         }
@@ -73,20 +74,6 @@ public class UpdateSnackCase implements UpdateSnackPort {
         return saved;
     }
 
-    private String getExtensionWithDot(String name) {
-        if (name == null) return "";
-        String trimmed = name.trim();
-        int lastDot = trimmed.lastIndexOf('.');
-        // No punto o el punto es el primer char (dotfile) -> sin extensión "convencional"
-        if (lastDot <= 0 || lastDot == trimmed.length() - 1) return "";
-        return trimmed.substring(lastDot); // incluye el punto
-    }
-
-    private String getExtensionNoDotLower(String name) {
-        String withDot = getExtensionWithDot(name);
-        return withDot.isEmpty() ? "" : withDot.substring(1).toLowerCase(); // sin punto y en minúsculas
-    }
-
     private String calculateUrl(String extension, String now) {
         var fileName = String.format("snack_%s.%s", now, extension);
         return String.format("https://%s.s3.%s.amazonaws.com/%s/%s", bucketName, awsRegion, bucketDirectory, fileName);
@@ -97,7 +84,7 @@ public class UpdateSnackCase implements UpdateSnackPort {
             saveFilePort.uploadFile(
                     bucketName,
                     bucketDirectory,
-                    String.format("snack_%s.%s",now, extension),
+                    String.format("snack_%s.%s", now, extension),
                     file.getBytes()
             );
         } catch (Exception e) {

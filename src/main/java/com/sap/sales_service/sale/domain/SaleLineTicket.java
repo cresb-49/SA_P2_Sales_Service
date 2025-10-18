@@ -1,9 +1,11 @@
 package com.sap.sales_service.sale.domain;
 
+import com.sap.sales_service.sale.domain.dtos.TicketView;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -14,6 +16,13 @@ public class SaleLineTicket {
     private Integer quantity;
     private BigDecimal unitPrice;
     private BigDecimal totalPrice;
+    private TicketStatusType status;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    // View information of ticket if exists
+    private TicketView ticketView;
+
 
     public SaleLineTicket(UUID saleId, Integer quantity, BigDecimal unitPrice) {
         this.id = UUID.randomUUID();
@@ -21,10 +30,13 @@ public class SaleLineTicket {
         this.quantity = quantity;
         this.unitPrice = unitPrice;
         this.totalPrice = unitPrice.multiply(BigDecimal.valueOf(quantity));
+        this.status = TicketStatusType.PENDING;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void validate() {
-        if(saleId == null) {
+        if (saleId == null) {
             throw new IllegalArgumentException("Sale ID cannot be null");
         }
         if (quantity <= 0) {
@@ -37,4 +49,38 @@ public class SaleLineTicket {
             throw new IllegalArgumentException("Total price must be non-negative");
         }
     }
+
+    public void cancel() {
+        if (this.status != TicketStatusType.RESERVED) {
+            throw new RuntimeException("Only reserved tickets can be cancelled");
+        }
+        this.status = TicketStatusType.CANCELLED;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void purchase() {
+        if (this.status != TicketStatusType.RESERVED) {
+            throw new RuntimeException("Only reserved tickets can be purchased");
+        }
+        this.status = TicketStatusType.PURCHASED;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void reserve() {
+        if (this.status != TicketStatusType.PENDING) {
+            throw new RuntimeException("Only cancelled tickets can be reserved again");
+        }
+        this.status = TicketStatusType.RESERVED;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void pend() {
+        if (this.status != TicketStatusType.RESERVED) {
+            throw new RuntimeException("Only reserved tickets can be set to pending");
+        }
+        this.status = TicketStatusType.PENDING;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+
 }
