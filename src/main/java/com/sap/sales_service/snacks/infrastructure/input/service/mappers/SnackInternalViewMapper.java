@@ -17,6 +17,7 @@ public class SnackInternalViewMapper {
         }
         return new SnackInternalView(
                 snack.getId(),
+                snack.getCinemaId(),
                 snack.getName(),
                 snack.getPrice(),
                 snack.getImageUrl(),

@@ -4,6 +4,7 @@ package com.sap.sales_service.sale.domain;
 import com.sap.common_lib.common.enums.sale.SaleStatusType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -21,7 +22,10 @@ public class Sale {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime paidAt;
+
+    @Setter
     private List<SaleLineSnack> saleLineSnacks;
+    @Setter
     private List<SaleLineTicket> saleLineTickets;
 
     public Sale(
@@ -38,6 +42,17 @@ public class Sale {
         this.updatedAt = updatedAt;
         this.paidAt = paidAt;
 
+    }
+
+    public Sale ( Sale sale){
+        this.id = sale.id;
+        this.clientId = sale.clientId;
+        this.cinemaId = sale.cinemaId;
+        this.totalAmount = sale.totalAmount;
+        this.status = sale.status;
+        this.createdAt = sale.createdAt;
+        this.updatedAt = sale.updatedAt;
+        this.paidAt = sale.paidAt;
     }
 
     public Sale(UUID clientId, List<SaleLineSnack> saleLineSnacks, List<SaleLineTicket> saleLineTickets) {

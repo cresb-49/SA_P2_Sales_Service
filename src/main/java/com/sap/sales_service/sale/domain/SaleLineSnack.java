@@ -3,6 +3,7 @@ package com.sap.sales_service.sale.domain;
 import com.sap.sales_service.sale.domain.dtos.SnackView;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -11,6 +12,7 @@ import java.util.UUID;
 @Getter
 public class SaleLineSnack {
     private UUID id;
+    @Setter
     private UUID saleId;
     private UUID snackId;
     private Integer quantity;
@@ -18,6 +20,7 @@ public class SaleLineSnack {
     private BigDecimal totalPrice;
 
     // View information of snack if exists
+    @Setter
     private SnackView snackView;
 
     public SaleLineSnack(UUID id, UUID saleId, UUID snackId, Integer quantity, BigDecimal unitPrice, BigDecimal totalPrice) {

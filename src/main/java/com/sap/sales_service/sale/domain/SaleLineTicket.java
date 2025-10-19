@@ -4,6 +4,7 @@ import com.sap.common_lib.common.enums.sale.TicketStatusType;
 import com.sap.sales_service.sale.domain.dtos.TicketView;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @Getter
 public class SaleLineTicket {
     private UUID id;
+    @Setter
     private UUID saleId;
     private Integer quantity;
     private BigDecimal unitPrice;
@@ -22,6 +24,7 @@ public class SaleLineTicket {
     private LocalDateTime updatedAt;
 
     // View information of ticket if exists
+    @Setter
     private TicketView ticketView;
 
     public SaleLineTicket(

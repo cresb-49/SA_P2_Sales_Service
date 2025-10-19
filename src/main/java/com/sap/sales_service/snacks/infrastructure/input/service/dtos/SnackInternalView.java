@@ -6,6 +6,7 @@ import java.util.UUID;
 
 public record SnackInternalView(
         UUID id,
+        UUID cinemaId,
         String name,
         BigDecimal price,
         String imageUrl,
