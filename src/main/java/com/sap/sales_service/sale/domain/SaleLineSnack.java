@@ -20,6 +20,15 @@ public class SaleLineSnack {
     // View information of snack if exists
     private SnackView snackView;
 
+    public SaleLineSnack(UUID id, UUID saleId, UUID snackId, Integer quantity, BigDecimal unitPrice, BigDecimal totalPrice) {
+        this.id = id;
+        this.saleId = saleId;
+        this.snackId = snackId;
+        this.quantity = quantity;
+        this.unitPrice = unitPrice;
+        this.totalPrice = totalPrice;
+    }
+
     public SaleLineSnack(UUID saleId, UUID snackId, Integer quantity, BigDecimal unitPrice) {
         this.id = UUID.randomUUID();
         this.saleId = saleId;

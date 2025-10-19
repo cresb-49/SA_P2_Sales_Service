@@ -1,37 +1,34 @@
 package com.sap.sales_service.sale.infrastructure.output.jpa.entity;
 
-import com.sap.common_lib.common.enums.sale.TicketStatusType;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter @Setter
+@Getter
+@Setter
 @Entity
-@Table(name = "sale_line_tickets")
-public class SaleLineTicketEntity {
+@Table(name = "sale_line_snacks")
+public class SaleLineSnackEntity {
     @Id
     private UUID id;
     @Column(nullable = false)
     private UUID saleId;
+    @Column(nullable = false)
+    private UUID snackId;
     @Column(nullable = false)
     private Integer quantity;
     @Column(nullable = false)
     private BigDecimal unitPrice;
     @Column(nullable = false)
     private BigDecimal totalPrice;
-    @Column(nullable = false, length = 50)
-    @Enumerated(EnumType.STRING)
-    private TicketStatusType status;
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;
 }

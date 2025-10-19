@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @Component
 @AllArgsConstructor
-public class KafkaAddEventAdapter implements ResponseSaleLineTicketPort {
+public class KafkaTicketEventAdapter implements ResponseSaleLineTicketPort {
 
     private final KafkaTemplate<String, ResponseTicketEventDTO> kafkaResponseTicketTemplate;
 

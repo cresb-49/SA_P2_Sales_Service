@@ -1,15 +1,14 @@
 package com.sap.sales_service.tickets.infrastructure.input.web.controller;
 
 import com.sap.sales_service.tickets.application.input.FindTicketPort;
+import com.sap.sales_service.tickets.application.input.GetOccupiedSetsByCinemaFunctionPort;
 import com.sap.sales_service.tickets.application.input.MarkUsedTicketPort;
 import com.sap.sales_service.tickets.infrastructure.input.web.mapper.TicketResponseMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -20,6 +19,7 @@ public class TicketController {
     private final FindTicketPort findTicketPort;
     private final MarkUsedTicketPort markUsedTicketPort;
     private final TicketResponseMapper ticketResponseMapper;
+    private final GetOccupiedSetsByCinemaFunctionPort getOccupiedSetsByCinemaFunctionPort;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getTicketById(UUID id) {
@@ -32,5 +32,13 @@ public class TicketController {
     public ResponseEntity<?> markTicketAsUsed(UUID id) {
         markUsedTicketPort.markTicketAsUsed(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/cinema-function/{cinemaFunctionId}/seats/occupied/ids")
+    public ResponseEntity<List<UUID>> isSeatOccupied(
+            @PathVariable UUID cinemaFunctionId
+    ) {
+        var occupiedSeats = getOccupiedSetsByCinemaFunctionPort.getOccupiedSeatsByCinemaFunctionId(cinemaFunctionId);
+        return ResponseEntity.ok(occupiedSeats);
     }
 }

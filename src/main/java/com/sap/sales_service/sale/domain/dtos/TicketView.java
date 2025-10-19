@@ -12,6 +12,7 @@ public record TicketView(
         UUID seatId,
         UUID userId,
         UUID movieId,
+        Boolean used,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {}

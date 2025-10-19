@@ -1,3 +1,4 @@
+
 package com.sap.sales_service.sale.domain;
 
 import com.sap.common_lib.common.enums.sale.SaleStatusType;
@@ -14,6 +15,7 @@ import java.util.UUID;
 public class Sale {
     private UUID id;
     private UUID clientId;
+    private UUID cinemaId;
     private BigDecimal totalAmount;
     private SaleStatusType status;
     private LocalDateTime createdAt;
@@ -21,6 +23,22 @@ public class Sale {
     private LocalDateTime paidAt;
     private List<SaleLineSnack> saleLineSnacks;
     private List<SaleLineTicket> saleLineTickets;
+
+    public Sale(
+            UUID id, UUID clientId, UUID cinemaId, BigDecimal totalAmount,
+            SaleStatusType status, LocalDateTime createdAt, LocalDateTime updatedAt,
+            LocalDateTime paidAt
+    ) {
+        this.id = id;
+        this.clientId = clientId;
+        this.cinemaId = cinemaId;
+        this.totalAmount = totalAmount;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.paidAt = paidAt;
+
+    }
 
     public Sale(UUID clientId, List<SaleLineSnack> saleLineSnacks, List<SaleLineTicket> saleLineTickets) {
         this.id = UUID.randomUUID();

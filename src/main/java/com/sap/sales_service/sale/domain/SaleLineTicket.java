@@ -24,6 +24,20 @@ public class SaleLineTicket {
     // View information of ticket if exists
     private TicketView ticketView;
 
+    public SaleLineTicket(
+            UUID id, UUID saleId, Integer quantity, BigDecimal unitPrice,
+            BigDecimal totalPrice, TicketStatusType status,
+            LocalDateTime createdAt, LocalDateTime updatedAt
+    ) {
+        this.id = id;
+        this.saleId = saleId;
+        this.quantity = quantity;
+        this.unitPrice = unitPrice;
+        this.totalPrice = totalPrice;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 
     public SaleLineTicket(UUID saleId, Integer quantity, BigDecimal unitPrice) {
         this.id = UUID.randomUUID();
