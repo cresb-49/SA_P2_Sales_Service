@@ -27,7 +27,7 @@ public class SaleLineTicketFactory {
         var tickets = findTicketPort.findAllBySaleLineTicketIds(saleLineTicksId);
         // Map tickets to with their IDs for easy access
         var ticketsMap = tickets.stream()
-                .collect(java.util.stream.Collectors.toMap(TicketView::id, ticket -> ticket));
+                .collect(java.util.stream.Collectors.toMap(TicketView::saleLineTicketId, ticket -> ticket));
         // Set tickets to sale lines tickets
         saleLinesTickets.forEach(saleLineTicket -> {
             var ticket = ticketsMap.get(saleLineTicket.getId());

@@ -26,8 +26,9 @@ public class SaleTicketAdapter implements FindTicketPort {
 
     @Override
     public List<TicketView> findAllBySaleLineTicketIds(List<UUID> saleLineTicketIds) {
-        return ticketViewMapper.toViewList(
-                ticketGatewayPort.findBySaleLineTicketId(saleLineTicketIds)
-        );
+        var tickets = ticketGatewayPort.findBySaleLineTicketId(saleLineTicketIds);
+        return tickets.stream()
+                .map(ticketViewMapper::toView)
+                .toList();
     }
 }
