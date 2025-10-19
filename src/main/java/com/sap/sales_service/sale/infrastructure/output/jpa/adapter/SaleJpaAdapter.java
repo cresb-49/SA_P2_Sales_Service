@@ -36,12 +36,6 @@ public class SaleJpaAdapter implements FindSalePort, SaveSalePort {
     }
 
     @Override
-    public Page<Sale> findByCustomerIdPaginated(UUID customerId, int page) {
-        var result = saleEntityRepository.findByClientId(customerId, PageRequest.of(page, 20));
-        return result.map(saleMapper::toDomain);
-    }
-
-    @Override
     public Page<Sale> search(SaleFilter filter, int page) {
         var spec = SaleEntitySpecs.byFilter(filter);
         var result = saleEntityRepository.findAll(spec, PageRequest.of(page, 20));

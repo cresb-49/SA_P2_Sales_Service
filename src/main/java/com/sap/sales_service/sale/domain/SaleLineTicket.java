@@ -68,6 +68,14 @@ public class SaleLineTicket {
         }
     }
 
+    public void use() {
+        if (this.status != TicketStatusType.PENDING) {
+            throw new RuntimeException("Only pending tickets can be used");
+        }
+        this.status = TicketStatusType.IN_USE;
+        this.updatedAt = LocalDateTime.now();
+    }
+
     public void cancel() {
         if (this.status != TicketStatusType.RESERVED) {
             throw new RuntimeException("Only reserved tickets can be cancelled");

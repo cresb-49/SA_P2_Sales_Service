@@ -55,9 +55,17 @@ public class Sale {
         this.paidAt = sale.paidAt;
     }
 
-    public Sale(UUID clientId, List<SaleLineSnack> saleLineSnacks, List<SaleLineTicket> saleLineTickets) {
+    /**
+     * Constructor for creating a new Sale
+     * @param clientId
+     * @param cinemaId
+     * @param saleLineSnacks
+     * @param saleLineTickets
+     */
+    public Sale(UUID clientId,UUID cinemaId, List<SaleLineSnack> saleLineSnacks, List<SaleLineTicket> saleLineTickets) {
         this.id = UUID.randomUUID();
         this.clientId = clientId;
+        this.cinemaId = cinemaId;
         var amountFromTickets = saleLineTickets.stream()
                 .map(SaleLineTicket::getTotalPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -65,10 +73,25 @@ public class Sale {
                 .map(SaleLineSnack::getTotalPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         this.totalAmount = amountFromTickets.add(amountFromSnacks);
+        this.saleLineSnacks = saleLineSnacks;
+        this.saleLineTickets = saleLineTickets;
         this.status = SaleStatusType.PENDING;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+        this.paidAt = null;
+        // Assign sale ID to lines
+        assignSaleIdToLines();
+        // Validate sale
         validate();
+    }
+
+    private void assignSaleIdToLines() {
+        for (SaleLineSnack line : saleLineSnacks) {
+            line.setSaleId(this.id);
+        }
+        for (SaleLineTicket line : saleLineTickets) {
+            line.setSaleId(this.id);
+        }
     }
 
     public void validate() {
@@ -76,6 +99,9 @@ public class Sale {
             throw new IllegalArgumentException("Client ID cannot be null");
         }
         for (SaleLineSnack line : saleLineSnacks) {
+            line.validate();
+        }
+        for (SaleLineTicket line : saleLineTickets) {
             line.validate();
         }
         if (totalAmount.compareTo(BigDecimal.ZERO) < 0) {

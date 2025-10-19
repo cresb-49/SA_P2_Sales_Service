@@ -13,7 +13,5 @@ public interface FindSalePort {
 
     List<Sale> findByCustomerId(UUID customerId);
 
-    Page<Sale> findByCustomerIdPaginated(UUID customerId, int page);
-
-    Page<Sale> search(SaleFilter filter,int page);
+    Page<Sale> search(SaleFilter filter, int page);
 }

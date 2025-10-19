@@ -8,6 +8,8 @@ import org.springframework.data.jpa.domain.Specification;
 import java.time.LocalDateTime;
 
 public class SaleEntitySpecs {
+
+
     public static Specification<SaleEntity> byFilter(SaleFilter f) {
         return Specification.allOf(
                 eqClientId(f.clientId()),
