@@ -18,6 +18,8 @@ public class Sale {
     private UUID clientId;
     private UUID cinemaId;
     private BigDecimal totalAmount;
+    private BigDecimal claimedAmount;
+    private BigDecimal discountedAmount;
     private SaleStatusType status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -30,6 +32,7 @@ public class Sale {
 
     public Sale(
             UUID id, UUID clientId, UUID cinemaId, BigDecimal totalAmount,
+            BigDecimal claimedAmount, BigDecimal discountedAmount,
             SaleStatusType status, LocalDateTime createdAt, LocalDateTime updatedAt,
             LocalDateTime paidAt
     ) {
@@ -37,17 +40,20 @@ public class Sale {
         this.clientId = clientId;
         this.cinemaId = cinemaId;
         this.totalAmount = totalAmount;
+        this.claimedAmount = claimedAmount;
+        this.discountedAmount = discountedAmount;
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.paidAt = paidAt;
-
     }
 
-    public Sale ( Sale sale){
+    public Sale(Sale sale) {
         this.id = sale.id;
         this.clientId = sale.clientId;
         this.cinemaId = sale.cinemaId;
+        this.claimedAmount = sale.claimedAmount;
+        this.discountedAmount = sale.discountedAmount;
         this.totalAmount = sale.totalAmount;
         this.status = sale.status;
         this.createdAt = sale.createdAt;
@@ -57,12 +63,13 @@ public class Sale {
 
     /**
      * Constructor for creating a new Sale
+     *
      * @param clientId
      * @param cinemaId
      * @param saleLineSnacks
      * @param saleLineTickets
      */
-    public Sale(UUID clientId,UUID cinemaId, List<SaleLineSnack> saleLineSnacks, List<SaleLineTicket> saleLineTickets) {
+    public Sale(UUID clientId, UUID cinemaId, BigDecimal discountedAmount, List<SaleLineSnack> saleLineSnacks, List<SaleLineTicket> saleLineTickets) {
         this.id = UUID.randomUUID();
         this.clientId = clientId;
         this.cinemaId = cinemaId;
@@ -73,6 +80,8 @@ public class Sale {
                 .map(SaleLineSnack::getTotalPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         this.totalAmount = amountFromTickets.add(amountFromSnacks);
+        this.claimedAmount = BigDecimal.ZERO;
+        this.discountedAmount = discountedAmount;
         this.saleLineSnacks = saleLineSnacks;
         this.saleLineTickets = saleLineTickets;
         this.status = SaleStatusType.PENDING;
@@ -83,6 +92,23 @@ public class Sale {
         assignSaleIdToLines();
         // Validate sale
         validate();
+    }
+
+    /**
+     * Calculate the payable amount after discount
+     *
+     * @return BigDecimal payable amount
+     */
+    public BigDecimal getPayableAmount() {
+        return this.totalAmount.subtract(this.discountedAmount);
+    }
+
+    public void sumClaimedAmount(BigDecimal amount) {
+        this.claimedAmount = this.claimedAmount.add(amount);
+        this.updatedAt = LocalDateTime.now();
+        if (this.claimedAmount.compareTo(this.totalAmount) > 0) {
+            throw new IllegalArgumentException("Claimed amount cannot be greater than total amount");
+        }
     }
 
     private void assignSaleIdToLines() {
@@ -97,6 +123,18 @@ public class Sale {
     public void validate() {
         if (clientId == null) {
             throw new IllegalArgumentException("Client ID cannot be null");
+        }
+        if (discountedAmount == null || discountedAmount.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Discounted amount must be non-negative");
+        }
+        if (discountedAmount.compareTo(totalAmount) > 0) {
+            throw new IllegalArgumentException("Discounted amount cannot be greater than total amount");
+        }
+        if (claimedAmount == null || claimedAmount.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Claimed amount must be non-negative");
+        }
+        if (claimedAmount.compareTo(totalAmount) > 0) {
+            throw new IllegalArgumentException("Claimed amount cannot be greater than total amount");
         }
         for (SaleLineSnack line : saleLineSnacks) {
             line.validate();
@@ -127,8 +165,8 @@ public class Sale {
     }
 
     public void cancel() {
-        if (status != SaleStatusType.PENDING) {
-            throw new IllegalStateException("Only pending sales can be cancelled");
+        if (!(status == SaleStatusType.PENDING || status == SaleStatusType.PAID_ERROR)) {
+            throw new IllegalStateException("Only pending or paid error sales can be cancelled");
         }
         this.status = SaleStatusType.CANCELLED;
         this.updatedAt = LocalDateTime.now();

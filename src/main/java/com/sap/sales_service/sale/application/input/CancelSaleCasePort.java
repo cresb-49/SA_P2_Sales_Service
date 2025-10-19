@@ -2,6 +2,6 @@ package com.sap.sales_service.sale.application.input;
 
 import java.util.UUID;
 
-public interface RetryPaidSaleCasePort {
-    void retryPaidSale(UUID saleId);
+public interface CancelSaleCasePort {
+    void cancelSaleById(UUID saleId);
 }

@@ -77,8 +77,8 @@ public class SaleLineTicket {
     }
 
     public void cancel() {
-        if (this.status != TicketStatusType.RESERVED) {
-            throw new RuntimeException("Only reserved tickets can be cancelled");
+        if (!(this.status == TicketStatusType.RESERVED || this.status == TicketStatusType.PENDING)) {
+            throw new RuntimeException("Only reserved or pending tickets can be cancelled");
         }
         this.status = TicketStatusType.CANCELLED;
         this.updatedAt = LocalDateTime.now();

@@ -1,6 +1,5 @@
 package com.sap.sales_service.sale.infrastructure.output.jpa.mapper;
 
-import com.sap.common_lib.common.enums.sale.SaleStatusType;
 import com.sap.sales_service.sale.domain.Sale;
 import com.sap.sales_service.sale.infrastructure.output.jpa.entity.SaleEntity;
 import lombok.AllArgsConstructor;
@@ -19,6 +18,8 @@ public class SaleMapper {
                 entity.getClientId(),
                 entity.getCinemaId(),
                 entity.getTotalAmount(),
+                entity.getClaimedAmount(),
+                entity.getDiscountedAmount(),
                 entity.getStatus(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt(),
@@ -35,6 +36,8 @@ public class SaleMapper {
                 domain.getClientId(),
                 domain.getCinemaId(),
                 domain.getTotalAmount(),
+                domain.getClaimedAmount(),
+                domain.getDiscountedAmount(),
                 domain.getStatus(),
                 domain.getCreatedAt(),
                 domain.getUpdatedAt(),

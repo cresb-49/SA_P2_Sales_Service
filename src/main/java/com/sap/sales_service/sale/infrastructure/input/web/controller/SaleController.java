@@ -1,7 +1,9 @@
 package com.sap.sales_service.sale.infrastructure.input.web.controller;
 
+import com.sap.sales_service.sale.application.input.ClaimTicketMoneySaleLineCasePort;
 import com.sap.sales_service.sale.application.input.CreateSaleCasePort;
 import com.sap.sales_service.sale.application.input.FindSaleCasePort;
+import com.sap.sales_service.sale.application.input.RetryPaidSaleCasePort;
 import com.sap.sales_service.sale.application.usecases.create.dtos.CreateSaleDTO;
 import com.sap.sales_service.sale.application.usecases.find.dtos.SaleFilterDTO;
 import com.sap.sales_service.sale.infrastructure.input.web.mapper.SaleResponseMapper;
@@ -18,6 +20,8 @@ public class SaleController {
     //Use cases will be implemented here
     private final FindSaleCasePort findSaleCasePort;
     private final CreateSaleCasePort createSaleCasePort;
+    private final ClaimTicketMoneySaleLineCasePort claimTicketMoneySaleLineCasePort;
+    private final RetryPaidSaleCasePort retryPaidSaleCasePort;
     //Mapper
     private final SaleResponseMapper saleResponseMapper;
 
@@ -66,5 +70,17 @@ public class SaleController {
         var sales = findSaleCasePort.findAllSales(saleFilterDTO, page);
         var responseDTO = sales.map(saleResponseMapper::toResponseDTO);
         return ResponseEntity.ok(responseDTO);
+    }
+
+    @PostMapping("claim/sale-line-ticket/{saleLineTicketId}")
+    public ResponseEntity<?> claimTicketMoney(@PathVariable UUID saleLineTicketId) {
+        claimTicketMoneySaleLineCasePort.claimTicketMoneySaleLine(saleLineTicketId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("retry/sale/{saleId}")
+    public ResponseEntity<?> retryPaidSale(@PathVariable UUID saleId) {
+        retryPaidSaleCasePort.retryPaidSale(saleId);
+        return ResponseEntity.ok().build();
     }
 }

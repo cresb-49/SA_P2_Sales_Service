@@ -26,6 +26,10 @@ public class SaleEntity {
     private UUID cinemaId;
     @Column(nullable = false)
     private BigDecimal totalAmount;
+    @Column(nullable = false)
+    private BigDecimal claimedAmount;
+    @Column(nullable = false)
+    private BigDecimal discountedAmount;
     @Column(nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private SaleStatusType status;

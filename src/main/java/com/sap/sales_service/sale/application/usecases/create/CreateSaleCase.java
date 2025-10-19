@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -32,6 +33,7 @@ public class CreateSaleCase implements CreateSaleCasePort {
     private final FindSnackPort findSnackPort;
     private final FindFunctionPort findFunctionPort;
     private final SendTicketRequestPort sendTicketRequestPort;
+    private final SendPaidRequestPort sendPaidRequestPort;
 
     @Override
     public Sale createSale(CreateSaleDTO createSaleDTO) {
@@ -72,6 +74,7 @@ public class CreateSaleCase implements CreateSaleCasePort {
         var sale = new Sale(
                 createSaleDTO.clientId(),
                 createSaleDTO.cinemaId(),
+                BigDecimal.ZERO,
                 saleLineSnacks,
                 saleLinesTicketsList
         );
@@ -87,6 +90,9 @@ public class CreateSaleCase implements CreateSaleCasePort {
         var ticketEvents = saleLinesTickets.values().stream().toList();
         // send ticket requests
         this.sendTicketRequests(ticketEvents);
+        // Send paid request
+        var paidAmount = savedSale.getPayableAmount();
+        sendPaidRequestPort.sendPaidRequest(savedSale.getId(), paidAmount);
         // Return Sale with all relations
         return saleFactory.saleWithAllRelations(savedSale);
     }

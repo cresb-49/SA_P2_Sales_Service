@@ -20,6 +20,8 @@ public class SaleResponseMapper {
                 domain.getId(),
                 domain.getClientId(),
                 domain.getTotalAmount(),
+                domain.getClaimedAmount(),
+                domain.getDiscountedAmount(),
                 domain.getStatus().toString(),
                 domain.getCreatedAt(),
                 domain.getUpdatedAt(),

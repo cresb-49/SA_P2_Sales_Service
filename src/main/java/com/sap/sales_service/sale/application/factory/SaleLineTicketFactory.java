@@ -41,4 +41,20 @@ public class SaleLineTicketFactory {
         saleLineTicket.setTicketView(ticket);
         return saleLineTicket;
     }
+
+    public List<SaleLineTicket> saleLineTicketsWithAllRelations(List<SaleLineTicket> saleLineTickets) {
+        var saleLineTicksId = saleLineTickets.stream()
+                .map(SaleLineTicket::getId)
+                .toList();
+        var tickets = findTicketPort.findAllBySaleLineTicketIds(saleLineTicksId);
+        // Map tickets to with their IDs for easy access
+        var ticketsMap = tickets.stream()
+                .collect(java.util.stream.Collectors.toMap(TicketView::saleLineTicketId, ticket -> ticket));
+        // Set tickets to sale lines tickets
+        saleLineTickets.forEach(saleLineTicket -> {
+            var ticket = ticketsMap.get(saleLineTicket.getId());
+            saleLineTicket.setTicketView(ticket);
+        });
+        return saleLineTickets;
+    }
 }

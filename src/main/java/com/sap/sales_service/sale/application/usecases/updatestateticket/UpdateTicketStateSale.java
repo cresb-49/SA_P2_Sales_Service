@@ -8,7 +8,6 @@ import com.sap.sales_service.sale.application.ouput.FindSalePort;
 import com.sap.sales_service.sale.application.ouput.SaveSaleLineTicketPort;
 import com.sap.sales_service.sale.application.ouput.SendNotificationPort;
 import com.sap.sales_service.sale.domain.SaleLineTicket;
-import com.sap.sales_service.sale.domain.dtos.events.NotificationDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +27,7 @@ public class UpdateTicketStateSale implements UpdateTicketStateSalePort {
     @Override
     public void updateTicketState(UUID saleLineTicketId, TicketStatusType newStatus, String message) {
         SaleLineTicket saleLineTicket = findSaleLineTicketPort.findById(saleLineTicketId)
-                .orElseThrow(() -> new NonRetryableBusinessException("Sale line ticket not found"));
+                .orElseThrow(() -> new NonRetryableBusinessException("La línea de venta de ticket con id " + saleLineTicketId + " no fue encontrada"));
         try {
             if (newStatus == TicketStatusType.IN_USE) {
                 saleLineTicket.use();
@@ -41,7 +40,7 @@ public class UpdateTicketStateSale implements UpdateTicketStateSalePort {
                 saveSaleLineTicketPort.save(saleLineTicket);
                 sendNotificationToClient(saleLineTicket.getSaleId(), message);
             } else {
-                sendNotificationToClient(saleLineTicket.getSaleId(), "Ticket status update failed: " + message);
+                sendNotificationToClient(saleLineTicket.getSaleId(), "La actualización de estado no es válida.");
             }
         } catch (IllegalStateException e) {
             sendNotificationToClient(saleLineTicket.getSaleId(), message + " ," + e.getMessage());
@@ -58,10 +57,10 @@ public class UpdateTicketStateSale implements UpdateTicketStateSalePort {
         var sale = findSalePort.findById(saleId).orElse(null);
         if (sale != null) {
             if (sale.getClientId() != null) {
-                sendNotificationPort.sendNotification(new NotificationDTO(
+                sendNotificationPort.sendNotification(
                         sale.getClientId(),
                         message
-                ));
+                );
             }
         }
     }

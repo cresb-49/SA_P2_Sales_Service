@@ -1,8 +1,7 @@
 package com.sap.sales_service.sale.application.ouput;
 
-
-import com.sap.sales_service.sale.domain.dtos.events.NotificationDTO;
+import java.util.UUID;
 
 public interface SendNotificationPort {
-    void sendNotification(NotificationDTO notificationDTO);
+    void sendNotification(UUID userId, String message);
 }
