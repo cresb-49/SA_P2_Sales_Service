@@ -72,13 +72,13 @@ public class SaleController {
         return ResponseEntity.ok(responseDTO);
     }
 
-    @PostMapping("claim/sale-line-ticket/{saleLineTicketId}")
+    @PostMapping("/claim/sale-line-ticket/{saleLineTicketId}")
     public ResponseEntity<?> claimTicketMoney(@PathVariable UUID saleLineTicketId) {
         claimTicketMoneySaleLineCasePort.claimTicketMoneySaleLine(saleLineTicketId);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("retry/sale/{saleId}")
+    @PostMapping("/retry/sale/{saleId}")
     public ResponseEntity<?> retryPaidSale(@PathVariable UUID saleId) {
         retryPaidSaleCasePort.retryPaidSale(saleId);
         return ResponseEntity.ok().build();
