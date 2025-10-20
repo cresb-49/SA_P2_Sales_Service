@@ -19,6 +19,7 @@ public class SaleResponseMapper {
         return new SaleResponseDTO(
                 domain.getId(),
                 domain.getClientId(),
+                domain.getCinemaId(),
                 domain.getTotalAmount(),
                 domain.getClaimedAmount(),
                 domain.getDiscountedAmount(),
