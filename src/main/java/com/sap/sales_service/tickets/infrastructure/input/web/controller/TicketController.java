@@ -22,22 +22,20 @@ public class TicketController {
     private final GetOccupiedSetsByCinemaFunctionPort getOccupiedSetsByCinemaFunctionPort;
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getTicketById(UUID id) {
+    public ResponseEntity<?> getTicketById(@PathVariable UUID id) {
         var ticket = findTicketPort.findById(id);
         var responseDTO = ticketResponseMapper.toResponseDTO(ticket);
         return ResponseEntity.ok(responseDTO);
     }
 
     @PatchMapping("/mark-used/{id}")
-    public ResponseEntity<?> markTicketAsUsed(UUID id) {
+    public ResponseEntity<?> markTicketAsUsed(@PathVariable UUID id) {
         markUsedTicketPort.markTicketAsUsed(id);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/cinema-function/{cinemaFunctionId}/seats/occupied/ids")
-    public ResponseEntity<List<UUID>> isSeatOccupied(
-            @PathVariable UUID cinemaFunctionId
-    ) {
+    @GetMapping("/public/cinema-function/{cinemaFunctionId}/seats/occupied/ids")
+    public ResponseEntity<List<UUID>> isSeatOccupied(@PathVariable UUID cinemaFunctionId) {
         var occupiedSeats = getOccupiedSetsByCinemaFunctionPort.getOccupiedSeatsByCinemaFunctionId(cinemaFunctionId);
         return ResponseEntity.ok(occupiedSeats);
     }

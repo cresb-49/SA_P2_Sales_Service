@@ -26,15 +26,15 @@ public class MarkUsedTicketCase implements MarkUsedTicketPort {
     @Override
     public void markTicketAsUsed(UUID ticketId) {
         findingTicketPort.findById(ticketId).orElseThrow(
-                () -> new NotFoundException("Ticket with id " + ticketId + " not found")
+                () -> new NotFoundException("El ticket con id " + ticketId + " no existe")
         );
         // Find by filter to ensure the sale as paid and ticket is valid
         var filter = TicketFilter.builder().ticketStatus(TicketStatusType.PURCHASED).saleStatus(SaleStatusType.PAID).build();
         var ticket = findingByFilterPort.findBySpecificIdAndFilter(filter, ticketId).orElseThrow(
-                () -> new IllegalStateException("Ticket with id " + ticketId + " is not valid to be marked as used")
+                () -> new IllegalStateException("El ticket con id " + ticketId + " no es valido para ser usado, verifique que la venta este pagada y el ticket no haya sido usado previamente")
         );
         if (ticket.getId() != ticketId) {
-            throw new RuntimeException("Mismatch in ticket IDs in marking ticket as used");
+            throw new RuntimeException("Error inesperado al marcar el ticket como usado");
         }
         ticket.markAsUsed();
         saveTicketPort.save(ticket);
