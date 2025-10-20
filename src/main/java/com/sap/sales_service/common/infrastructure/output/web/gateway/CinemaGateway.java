@@ -15,7 +15,7 @@ import java.util.UUID;
 public class CinemaGateway implements CinemaGatewayPort {
 
     private final UUID movieId = UUID.fromString("39ac6172-735b-4097-8f88-f307a83c4109");
-    private final UUID cinemaId = UUID.fromString("f40137e0-6559-438e-97e1-85767c7ff0ae");
+    private final UUID cinemaId = UUID.fromString("9f8ce564-3846-49ed-bead-d73f4e1541be");
 
     @Override
     public boolean existsById(UUID cinemaId) {

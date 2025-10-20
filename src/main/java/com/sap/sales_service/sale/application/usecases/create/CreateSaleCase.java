@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -123,7 +124,7 @@ public class CreateSaleCase implements CreateSaleCasePort {
         }
         // Validate snacks belong to cinema
         for (SnackView snack : snacks) {
-            if (snack.cinemaId() != cinemaId) {
+            if (!Objects.equals(snack.cinemaId(), cinemaId)) {
                 throw new IllegalStateException("El snack con id " + snack.id() + " no pertenece al cine con id " + cinemaId);
             }
         }
@@ -152,7 +153,7 @@ public class CreateSaleCase implements CreateSaleCasePort {
         }
         // Verificamos que las funciones pertenezcan al cine indicado
         for (FunctionView function : functions) {
-            if (function.cinemaId() != cinemaId) {
+            if (!Objects.equals(function.cinemaId(), cinemaId)) {
                 throw new IllegalStateException("La función con id " + function.id() + " no pertenece al cine con id " + cinemaId);
             }
         }
