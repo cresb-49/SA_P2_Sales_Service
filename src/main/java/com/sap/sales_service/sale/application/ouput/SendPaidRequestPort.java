@@ -4,5 +4,5 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public interface SendPaidRequestPort {
-    void sendPaidRequest(UUID saleId, BigDecimal amount);
+    void sendPaidRequest(UUID userId, UUID saleId, BigDecimal amount);
 }

@@ -1,5 +1,7 @@
 package com.sap.sales_service.sale.infrastructure.output.kafka;
 
+import com.sap.common_lib.dto.response.sales.events.PaidPendingSaleEventDTO;
+import com.sap.common_lib.dto.response.sales.events.RefoundAmountSaleEventDTO;
 import com.sap.common_lib.events.topics.TopicConstants;
 import com.sap.sales_service.sale.application.ouput.RefoundAmountRequestPort;
 import com.sap.sales_service.sale.application.ouput.SendNotificationPort;
@@ -17,11 +19,13 @@ import java.util.UUID;
 @AllArgsConstructor
 public class KafkaSaleEventAdapter implements SendTicketRequestPort, SendNotificationPort, SendPaidRequestPort, RefoundAmountRequestPort {
 
-    private final KafkaTemplate<String, com.sap.common_lib.dto.response.sales.events.CreateTicketEventDTO> createTicketEventDTOKafkaTemplate;
+    private final KafkaTemplate<String, CreateTicketEventDTO> createTicketEventDTOKafkaTemplate;
+    private final KafkaTemplate<String, PaidPendingSaleEventDTO> paidPendingSaleEventDTOKafkaTemplate;
+    private final KafkaTemplate<String, RefoundAmountSaleEventDTO> refoundAmountSaleEventDTOKafkaTemplate;
 
     @Override
     public void sendTicketRequest(CreateTicketEventDTO createTicketEventDTO) {
-        var interfaceDTO = new com.sap.common_lib.dto.response.sales.events.CreateTicketEventDTO(
+        var interfaceDTO = new CreateTicketEventDTO(
                 createTicketEventDTO.saleLineTicketId(),
                 createTicketEventDTO.cinemaFunctionId(),
                 createTicketEventDTO.cinemaId(),
@@ -33,13 +37,25 @@ public class KafkaSaleEventAdapter implements SendTicketRequestPort, SendNotific
     }
 
     @Override
-    public void sendPaidRequest(UUID saleId, BigDecimal amount) {
+    public void sendPaidRequest(UUID userId, UUID saleId, BigDecimal amount) {
         System.out.println("Sending paid request for saleId: " + saleId + " with amount: " + amount);
+        var paidPendingSaleEventDTO = new PaidPendingSaleEventDTO(
+                userId,
+                saleId,
+                amount
+        );
+        paidPendingSaleEventDTOKafkaTemplate.send(TopicConstants.SALES_PENDING_PAYMENT_TOPIC, paidPendingSaleEventDTO);
     }
 
     @Override
     public void requestRefoundAmount(BigDecimal amount, UUID customerId, String message) {
         System.out.println("Requesting refound amount: " + amount + " for customerId: " + customerId + " with message: " + message);
+        var refoundAmountSaleEventDTO = new RefoundAmountSaleEventDTO(
+                customerId,
+                UUID.randomUUID(),
+                amount
+        );
+        refoundAmountSaleEventDTOKafkaTemplate.send(TopicConstants.REFUND_AMOUNT_SALE_TOPIC, refoundAmountSaleEventDTO);
     }
 
     @Override

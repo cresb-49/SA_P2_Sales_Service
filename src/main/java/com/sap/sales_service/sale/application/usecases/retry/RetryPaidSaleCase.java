@@ -35,7 +35,7 @@ public class RetryPaidSaleCase implements RetryPaidSaleCasePort {
         }
         sale.pending();
         saveSalePort.save(sale);
-        sendPaidRequestPort.sendPaidRequest(sale.getId(), sale.getTotalAmount());
+        sendPaidRequestPort.sendPaidRequest(sale.getClientId(), sale.getId(), sale.getTotalAmount());
         if (sale.getClientId() != null) {
             sendNotificationPort.sendNotification(
                     sale.getClientId(),

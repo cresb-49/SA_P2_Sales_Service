@@ -1,5 +1,6 @@
 package com.sap.sales_service.sale.application.usecases.create;
 
+import com.sap.common_lib.exception.NotFoundException;
 import com.sap.sales_service.sale.application.factory.SaleFactory;
 import com.sap.sales_service.sale.application.input.CreateSaleCasePort;
 import com.sap.sales_service.sale.application.ouput.*;
@@ -34,27 +35,35 @@ public class CreateSaleCase implements CreateSaleCasePort {
     private final FindFunctionPort findFunctionPort;
     private final SendTicketRequestPort sendTicketRequestPort;
     private final SendPaidRequestPort sendPaidRequestPort;
+    private final FindCinemaPort findCinemaPort;
+    private final FindUserPort findUserPort;
 
+    /**
+     * Creates a new Sale based on the provided CreateSaleDTO
+     *
+     * @param createSaleDTO Data Transfer Object containing sale details
+     * @return Created Sale with all relations
+     */
     @Override
     public Sale createSale(CreateSaleDTO createSaleDTO) {
-        //Get function UUIDs
-        var functionUUIDs = createSaleDTO.tickets().stream().map(
-                CreateSaleLineTicketDTO::cinemaFunctionId
-        ).distinct().toList();
+        //Verify cinema exists
+        if (!findCinemaPort.existsById(createSaleDTO.cinemaId())) {
+            throw new NotFoundException("El cine con id " + createSaleDTO.cinemaId() + " no fue encontrado");
+        }
+        //Verify client exists
+        if (!findUserPort.existsById(createSaleDTO.clientId())) {
+            throw new NotFoundException("El cliente con id " + createSaleDTO.clientId() + " no fue encontrado");
+        }
         //Find functions
-        var functions = findFunctionPort.findByFunctionIds(functionUUIDs);
-        if (functions.isEmpty() || (functions.size() != functionUUIDs.size())) {
-            throw new IllegalStateException("One or more functions not found");
-        }
-        //Get snack uuids
-        var snackUUIDs = createSaleDTO.snacks().stream().map(
-                CreateSaleLineSnackDTO::snackId
-        ).distinct().toList();
+        var functions = this.getFunctionsAndValidateCinema(
+                createSaleDTO.tickets(),
+                createSaleDTO.cinemaId()
+        );
         // Find snacks
-        var snacks = findSnackPort.findAllById(snackUUIDs);
-        if (snacks.isEmpty() || (snacks.size() != snackUUIDs.size())) {
-            throw new IllegalStateException("One or more snacks not found");
-        }
+        var snacks = this.getSnacksAndValidateCinema(
+                createSaleDTO.snacks(),
+                createSaleDTO.cinemaId()
+        );
         //Map functions by ID
         var functionMap = this.mapFunctionsById(functions);
         // Map snacks by ID
@@ -92,12 +101,69 @@ public class CreateSaleCase implements CreateSaleCasePort {
         this.sendTicketRequests(ticketEvents);
         // Send paid request
         var paidAmount = savedSale.getPayableAmount();
-        sendPaidRequestPort.sendPaidRequest(savedSale.getId(), paidAmount);
+        sendPaidRequestPort.sendPaidRequest(savedSale.getClientId(), savedSale.getId(), paidAmount);
         // Return Sale with all relations
         return saleFactory.saleWithAllRelations(savedSale);
     }
 
     // Helper methods
+
+    private List<SnackView> getSnacksAndValidateCinema(
+            List<CreateSaleLineSnackDTO> snackDTOs,
+            UUID cinemaId
+    ) {
+        // Get snack UUIDs
+        var snackUUIDs = snackDTOs.stream().map(
+                CreateSaleLineSnackDTO::snackId
+        ).distinct().toList();
+        //Find snacks
+        var snacks = findSnackPort.findAllById(snackUUIDs);
+        if (snacks.isEmpty() || (snacks.size() != snackUUIDs.size())) {
+            throw new IllegalStateException("Uno o más snacks no fueron encontrados");
+        }
+        // Validate snacks belong to cinema
+        for (SnackView snack : snacks) {
+            if (snack.cinemaId() != cinemaId) {
+                throw new IllegalStateException("El snack con id " + snack.id() + " no pertenece al cine con id " + cinemaId);
+            }
+        }
+        return snacks;
+    }
+
+    /**
+     * Retrieves functions and validates that they belong to the specified cinema
+     *
+     * @param ticketDTOs List of CreateSaleLineTicketDTO
+     * @param cinemaId   UUID of the cinema
+     * @return List of FunctionView
+     */
+    private List<FunctionView> getFunctionsAndValidateCinema(
+            List<CreateSaleLineTicketDTO> ticketDTOs,
+            UUID cinemaId
+    ) {
+        // Get function UUIDs
+        var functionUUIDs = ticketDTOs.stream().map(
+                CreateSaleLineTicketDTO::cinemaFunctionId
+        ).distinct().toList();
+        //Find functions
+        var functions = findFunctionPort.findByFunctionIds(functionUUIDs);
+        if (functions.isEmpty() || (functions.size() != functionUUIDs.size())) {
+            throw new IllegalStateException("Una o más funciones no fueron encontradas");
+        }
+        // Verificamos que las funciones pertenezcan al cine indicado
+        for (FunctionView function : functions) {
+            if (function.cinemaId() != cinemaId) {
+                throw new IllegalStateException("La función con id " + function.id() + " no pertenece al cine con id " + cinemaId);
+            }
+        }
+        return functions;
+    }
+
+    /**
+     * Sends ticket requests for a list of CreateTicketEventDTO
+     *
+     * @param ticketEvents List of CreateTicketEventDTO
+     */
     private void sendTicketRequests(List<CreateTicketEventDTO> ticketEvents) {
         for (CreateTicketEventDTO ticketEvent : ticketEvents) {
             sendTicketRequestPort.sendTicketRequest(ticketEvent);

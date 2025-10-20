@@ -22,4 +22,14 @@ class KafkaTopicConfig {
     NewTopic updatePaidStatusAddTopic() {
         return new NewTopic(TopicConstants.UPDATE_PAID_STATUS_SALE_TOPIC, 1, (short) 1);
     }
+
+    @Bean
+    NewTopic salesPendingPaymentTopic() {
+        return new NewTopic(TopicConstants.SALES_PENDING_PAYMENT_TOPIC, 1, (short) 1);
+    }
+
+    @Bean
+    NewTopic refundAmountSaleTopic() {
+        return new NewTopic(TopicConstants.REFUND_AMOUNT_SALE_TOPIC, 1, (short) 1);
+    }
 }
