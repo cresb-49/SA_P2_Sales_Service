@@ -17,7 +17,6 @@ public class SaleTicketViewMapper {
         return new TicketView(
                 domainView.id(),
                 domainView.saleLineTicketId(),
-                domainView.cinemaId(),
                 domainView.cinemaFunctionId(),
                 domainView.cinemaId(),
                 domainView.cinemaRoomId(),
