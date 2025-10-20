@@ -17,10 +17,21 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
+import com.sap.common_lib.dto.response.RestApiErrorDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Controller
 @RequestMapping("/api/v1/snacks")
 @AllArgsConstructor
+@Tag(name = "Snacks", description = "Endpoints públicos y protegidos para gestionar snacks")
 public class SnackController {
 
     private final CreateSnackPort createSnackPort;
@@ -30,6 +41,15 @@ public class SnackController {
     private final SnackResponseMapper snackResponseMapper;
 
     //Public endpoints
+    @Operation(summary = "Obtener snack por ID (público)", description = "Recupera la información de un snack por su identificador.")
+    @Parameters({
+            @Parameter(name = "id", description = "Identificador del snack", required = true)
+    })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Snack encontrado"),
+            @ApiResponse(responseCode = "404", description = "Snack no encontrado", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class)))
+    })
     @GetMapping("/public/{id}")
     public ResponseEntity<?> getById(
             @PathVariable UUID id
@@ -39,6 +59,17 @@ public class SnackController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Crear snack", description = "Crea un nuevo snack. Puede incluir un archivo multimedia opcional.")
+    @Parameters({
+            @Parameter(name = "file", description = "Archivo multimedia opcional (imagen)")
+    })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Snack creado correctamente"),
+            @ApiResponse(responseCode = "400", description = "Solicitud inválida", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class))),
+            @ApiResponse(responseCode = "409", description = "Conflicto: el recurso ya existe", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class)))
+    })
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN') or hasRole('CINEMA_ADMIN')")
     public ResponseEntity<?> createSnack(
@@ -50,6 +81,19 @@ public class SnackController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Actualizar snack", description = "Actualiza la información de un snack. Puede incluir un archivo multimedia opcional.")
+    @Parameters({
+            @Parameter(name = "id", description = "Identificador del snack", required = true),
+            @Parameter(name = "file", description = "Archivo multimedia opcional (imagen)")
+    })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Snack actualizado correctamente"),
+            @ApiResponse(responseCode = "400", description = "Solicitud inválida", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Snack no encontrado", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class))),
+            @ApiResponse(responseCode = "409", description = "Conflicto de actualización", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class)))
+    })
+    @SecurityRequirement(name = "bearerAuth")
     @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN') or hasRole('CINEMA_ADMIN')")
     public ResponseEntity<?> updateSnack(
@@ -63,6 +107,18 @@ public class SnackController {
     }
 
     // Public endpoint to get snacks by name (partial match) with pagination
+    @Operation(summary = "Buscar snacks (público)", description = "Busca snacks por nombre (coincidencia parcial), activo y cine. Devuelve página de resultados.")
+    @Parameters({
+            @Parameter(name = "name", description = "Nombre o parte del nombre del snack"),
+            @Parameter(name = "active", description = "Si el snack está activo"),
+            @Parameter(name = "cinemaId", description = "Identificador del cine"),
+            @Parameter(name = "page", description = "Número de página (0-index)", example = "0")
+    })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Página de snacks recuperada correctamente"),
+            @ApiResponse(responseCode = "400", description = "Parámetros inválidos", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class)))
+    })
     @GetMapping("/public/search")
     public ResponseEntity<?> getSnacksByName(
             @RequestParam(required = false) String name,
@@ -77,6 +133,12 @@ public class SnackController {
     }
 
     // Public endpoint to get snacks by a list of ids
+    @Operation(summary = "Obtener snacks por IDs (público)", description = "Recupera una lista de snacks a partir de sus identificadores.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Listado de snacks recuperado correctamente"),
+            @ApiResponse(responseCode = "400", description = "Solicitud inválida", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class)))
+    })
     @PostMapping("/public/ids")
     public ResponseEntity<?> getSnacksByIds(@RequestBody List<UUID> ids) {
         var snacks = findSnackPort.findByIds(ids);
@@ -84,6 +146,18 @@ public class SnackController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Listar snacks por cine (público)", description = "Lista snacks filtrando por cine y parámetros opcionales.")
+    @Parameters({
+            @Parameter(name = "cinemaId", description = "Identificador del cine", required = true),
+            @Parameter(name = "name", description = "Nombre o parte del nombre del snack"),
+            @Parameter(name = "active", description = "Si el snack está activo"),
+            @Parameter(name = "page", description = "Número de página (0-index)", example = "0")
+    })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Página de snacks recuperada correctamente"),
+            @ApiResponse(responseCode = "400", description = "Parámetros inválidos", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class)))
+    })
     @GetMapping("/public/cinema/{cinemaId}")
     public ResponseEntity<?> getSnacksByCinemaId(
             @PathVariable UUID cinemaId,
