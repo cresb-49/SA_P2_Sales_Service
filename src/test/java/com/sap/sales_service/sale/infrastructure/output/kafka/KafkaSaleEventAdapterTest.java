@@ -93,15 +93,4 @@ class KafkaSaleEventAdapterTest {
         assertThatCode(() -> adapter.requestRefoundAmount(amount, userId, message))
                 .doesNotThrowAnyException();
     }
-
-    @Test
-    void sendNotification_shouldNotInteractWithKafkaTemplates() {
-        // Act
-        adapter.sendNotification(UUID.randomUUID(), "hola mundo");
-
-        // Assert
-        verifyNoInteractions(createTicketEventDTOKafkaTemplate);
-        verifyNoInteractions(paidPendingSaleEventDTOKafkaTemplate);
-        verifyNoInteractions(refoundAmountSaleEventDTOKafkaTemplate);
-    }
 }

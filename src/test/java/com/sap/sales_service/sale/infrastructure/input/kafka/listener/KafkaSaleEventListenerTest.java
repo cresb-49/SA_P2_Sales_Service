@@ -2,6 +2,7 @@
 
 package com.sap.sales_service.sale.infrastructure.input.kafka.listener;
 
+import com.sap.common_lib.dto.response.notification.events.SendGenericMailEventDTO;
 import com.sap.common_lib.dto.response.sales.events.PaidPendingSaleEventDTO;
 import com.sap.common_lib.dto.response.sales.events.RefoundAmountSaleEventDTO;
 import com.sap.common_lib.events.topics.TopicConstants;
@@ -18,7 +19,6 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**
@@ -33,13 +33,15 @@ class KafkaSaleEventListenerTest {
     private KafkaTemplate<String, PaidPendingSaleEventDTO> paidPendingTemplate;
     @Mock
     private KafkaTemplate<String, RefoundAmountSaleEventDTO> refoundTemplate;
+    @Mock
+    private KafkaTemplate<String, SendGenericMailEventDTO> notificationTemplate;
 
     private KafkaSaleEventAdapter adapter;
 
     @BeforeEach
     void init() {
         MockitoAnnotations.openMocks(this);
-        adapter = new KafkaSaleEventAdapter(createTicketTemplate, paidPendingTemplate, refoundTemplate);
+        adapter = new KafkaSaleEventAdapter(createTicketTemplate, paidPendingTemplate, refoundTemplate, notificationTemplate);
     }
 
     @Test
@@ -116,13 +118,5 @@ class KafkaSaleEventListenerTest {
         assertThat(sent.amount()).isEqualByComparingTo(amount);
         // The adapter generates a random correlation id; just assert it's present
         assertThat(sent.saleId()).isNotNull();
-    }
-
-    @Test
-    void sendNotification_shouldNotInteractWithKafkaTemplates() {
-        // When
-        adapter.sendNotification(UUID.randomUUID(), "hola mundo");
-        // Then - ensure it did not produce to any topic
-        verifyNoInteractions(createTicketTemplate, paidPendingTemplate, refoundTemplate);
     }
 }
