@@ -75,10 +75,11 @@ class KafkaSaleEventAdapterTest {
         // Arrange
         UUID userId = UUID.randomUUID();
         UUID saleId = UUID.randomUUID();
+        UUID cinemaId = UUID.randomUUID();
         BigDecimal amount = new BigDecimal("123.45");
 
         // Act & Assert
-        assertThatCode(() -> adapter.sendPaidRequest(userId, saleId, amount))
+        assertThatCode(() -> adapter.sendPaidRequest(userId, cinemaId, saleId, amount))
                 .doesNotThrowAnyException();
     }
 

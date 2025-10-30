@@ -80,10 +80,11 @@ class KafkaSaleEventListenerTest {
         // Given
         UUID userId = UUID.randomUUID();
         UUID saleId = UUID.randomUUID();
+        UUID cinemaId = UUID.randomUUID();
         BigDecimal amount = new BigDecimal("123.45");
 
         // When
-        adapter.sendPaidRequest(userId, saleId, amount);
+        adapter.sendPaidRequest(userId, cinemaId, saleId, amount);
 
         // Then
         ArgumentCaptor<String> topicCap = ArgumentCaptor.forClass(String.class);

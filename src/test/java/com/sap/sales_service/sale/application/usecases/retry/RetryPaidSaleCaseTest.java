@@ -115,7 +115,7 @@ class RetryPaidSaleCaseTest {
         verify(saveSalePort).save(saleCaptor.capture());
         assertThat(saleCaptor.getValue().getStatus()).isEqualTo(SaleStatusType.PENDING);
 
-        verify(sendPaidRequestPort).sendPaidRequest(eq(clientId), eq(saleId), eq(new BigDecimal("100.00")));
+        verify(sendPaidRequestPort).sendPaidRequest(eq(clientId), eq(sale.getCinemaId()), eq(saleId), eq(new BigDecimal("100.00")));
         verify(sendNotificationPort).sendNotification(eq(clientId), contains(saleId.toString()));
         verify(findSalePort).findById(saleId);
         verifyNoMoreInteractions(sendPaidRequestPort, sendNotificationPort, saveSalePort);
@@ -131,7 +131,7 @@ class RetryPaidSaleCaseTest {
         caseUnderTest.retryPaidSale(saleId);
 
         verify(saveSalePort).save(any(Sale.class));
-        verify(sendPaidRequestPort).sendPaidRequest(isNull(), eq(saleId), eq(new BigDecimal("100.00")));
+        verify(sendPaidRequestPort).sendPaidRequest(isNull(), eq(sale.getCinemaId()), eq(saleId), eq(new BigDecimal("100.00")));
         verify(sendNotificationPort, never()).sendNotification(any(), any());
         verify(findSalePort).findById(saleId);
         verifyNoMoreInteractions(sendPaidRequestPort, sendNotificationPort, saveSalePort);
