@@ -2,17 +2,15 @@
 
 package com.sap.sales_service.sale.infrastructure.output.jpa.adapter;
 
-import com.sap.sales_service.sale.application.ouput.FindSaleLineSnackPort;
-import com.sap.sales_service.sale.application.ouput.SaveSaleLineSnackPort;
 import com.sap.sales_service.sale.domain.SaleLineSnack;
 import com.sap.sales_service.sale.infrastructure.output.jpa.entity.SaleLineSnackEntity;
 import com.sap.sales_service.sale.infrastructure.output.jpa.mapper.SaleLineSnackMapper;
+import com.sap.sales_service.sale.infrastructure.output.jpa.mapper.SnackSalesByCinemaMapper;
 import com.sap.sales_service.sale.infrastructure.output.jpa.repository.SaleLineSnackEntityRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -34,11 +32,14 @@ class SaleLineSnackJpaAdapterTest {
     @Mock
     private SaleLineSnackMapper mapper;
 
+    @Mock
+    private SnackSalesByCinemaMapper snackSalesByCinemaMapper;
+
     private SaleLineSnackJpaAdapter adapter;
 
     @BeforeEach
     void setUp() {
-        adapter = new SaleLineSnackJpaAdapter(repository, mapper);
+        adapter = new SaleLineSnackJpaAdapter(repository, mapper, snackSalesByCinemaMapper);
     }
 
     @Test

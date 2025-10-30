@@ -1,20 +1,10 @@
 package com.sap.sales_service.sale.infrastructure.input.web.controller;
 
-import com.sap.sales_service.sale.application.input.ClaimTicketMoneySaleLineCasePort;
-import com.sap.sales_service.sale.application.input.CreateSaleCasePort;
-import com.sap.sales_service.sale.application.input.FindSaleCasePort;
-import com.sap.sales_service.sale.application.input.RetryPaidSaleCasePort;
+import com.sap.common_lib.dto.response.RestApiErrorDTO;
+import com.sap.sales_service.sale.application.input.*;
 import com.sap.sales_service.sale.application.usecases.create.dtos.CreateSaleDTO;
 import com.sap.sales_service.sale.application.usecases.find.dtos.SaleFilterDTO;
 import com.sap.sales_service.sale.infrastructure.input.web.mapper.SaleResponseMapper;
-import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
-
-import com.sap.common_lib.dto.response.RestApiErrorDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -24,6 +14,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.UUID;
 
 @Tag(name = "Ventas", description = "Endpoints para gestionar ventas y su estado de pago")
 @SecurityRequirement(name = "bearerAuth")
@@ -36,6 +35,7 @@ public class SaleController {
     private final CreateSaleCasePort createSaleCasePort;
     private final ClaimTicketMoneySaleLineCasePort claimTicketMoneySaleLineCasePort;
     private final RetryPaidSaleCasePort retryPaidSaleCasePort;
+    private final SnackReportByCinemaCasePort snackReportByCinemaCasePort;
     //Mapper
     private final SaleResponseMapper saleResponseMapper;
 
@@ -165,4 +165,51 @@ public class SaleController {
         retryPaidSaleCasePort.retryPaidSale(saleId);
         return ResponseEntity.ok().build();
     }
+
+    @Operation(summary = "Generar reporte de snacks por cine", description = "Genera un reporte resumen de ventas de snacks para un cine en un rango de fechas.")
+    @Parameters({
+            @Parameter(name = "cinemaId", description = "Identificador del cine", required = true),
+            @Parameter(name = "from", description = "Fecha inicial (YYYY-MM-DD)", required = true),
+            @Parameter(name = "to", description = "Fecha final (YYYY-MM-DD)", required = true)
+    })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Reporte generado correctamente"),
+            @ApiResponse(responseCode = "400", description = "Parámetros inválidos", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class)))
+    })
+    @PostMapping("/reports/sales/snacks/cinema/{cinemaId}")
+    public ResponseEntity<?> generateSnackReportByCinema(
+            @PathVariable UUID cinemaId,
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to
+    ) {
+        var reportDTO = snackReportByCinemaCasePort.report(from, to, cinemaId);
+        return ResponseEntity.ok(reportDTO);
+    }
+
+    @Operation(summary = "Descargar reporte de snacks (PDF)", description = "Genera y descarga el reporte de snacks en formato PDF para un cine en un rango de fechas.")
+    @Parameters({
+            @Parameter(name = "cinemaId", description = "Identificador del cine", required = true),
+            @Parameter(name = "from", description = "Fecha inicial (YYYY-MM-DD)", required = true),
+            @Parameter(name = "to", description = "Fecha final (YYYY-MM-DD)", required = true)
+    })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "PDF generado correctamente", content = @Content(mediaType = "application/pdf")),
+            @ApiResponse(responseCode = "400", description = "Parámetros inválidos", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class)))
+    })
+    @PostMapping("/reports/sales/snacks/cinema/{cinemaId}/pdf")
+    public ResponseEntity<?> downloadSnackReportByCinemaPdf(
+            @PathVariable UUID cinemaId,
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to
+    ) {
+        var pdfBytes = snackReportByCinemaCasePort.generateReportFile(from, to, cinemaId);
+        String fileName = "snack_report_cinema_" + cinemaId + ".pdf";
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=" + fileName)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdfBytes);
+    }
+
 }

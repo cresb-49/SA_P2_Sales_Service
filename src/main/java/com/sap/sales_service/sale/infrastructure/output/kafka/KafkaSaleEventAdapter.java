@@ -1,5 +1,6 @@
 package com.sap.sales_service.sale.infrastructure.output.kafka;
 
+import com.sap.common_lib.dto.response.notification.events.SendGenericMailEventDTO;
 import com.sap.common_lib.dto.response.sales.events.PaidPendingSaleEventDTO;
 import com.sap.common_lib.dto.response.sales.events.RefoundAmountSaleEventDTO;
 import com.sap.common_lib.events.topics.TopicConstants;
@@ -22,6 +23,7 @@ public class KafkaSaleEventAdapter implements SendTicketRequestPort, SendNotific
     private final KafkaTemplate<String, CreateTicketEventDTO> createTicketEventDTOKafkaTemplate;
     private final KafkaTemplate<String, PaidPendingSaleEventDTO> paidPendingSaleEventDTOKafkaTemplate;
     private final KafkaTemplate<String, RefoundAmountSaleEventDTO> refoundAmountSaleEventDTOKafkaTemplate;
+    private final KafkaTemplate<String, SendGenericMailEventDTO> sendGenericMailEventDTOKafkaTemplate;
 
     @Override
     public void sendTicketRequest(CreateTicketEventDTO createTicketEventDTO) {
@@ -62,5 +64,10 @@ public class KafkaSaleEventAdapter implements SendTicketRequestPort, SendNotific
     @Override
     public void sendNotification(UUID userId, String message) {
         System.out.println("Sending notification to userId: " + userId + " with message: " + message);
+        var eventDTO = new SendGenericMailEventDTO(
+                userId.toString(),
+                message
+        );
+        sendGenericMailEventDTOKafkaTemplate.send(TopicConstants.REQUEST_GENERIC_MAIL, userId.toString(), eventDTO);
     }
 }
