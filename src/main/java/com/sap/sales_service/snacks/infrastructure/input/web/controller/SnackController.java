@@ -1,12 +1,23 @@
 package com.sap.sales_service.snacks.infrastructure.input.web.controller;
 
+import com.sap.common_lib.dto.response.RestApiErrorDTO;
 import com.sap.sales_service.snacks.application.input.CreateSnackPort;
 import com.sap.sales_service.snacks.application.input.FindSnackPort;
 import com.sap.sales_service.snacks.application.input.UpdateSnackPort;
+import com.sap.sales_service.snacks.application.input.UpdateStateSnackPort;
 import com.sap.sales_service.snacks.domain.SnackFilter;
 import com.sap.sales_service.snacks.infrastructure.input.web.dtos.CreateSnackRequestDTO;
 import com.sap.sales_service.snacks.infrastructure.input.web.dtos.UpdateSnackRequestDTO;
 import com.sap.sales_service.snacks.infrastructure.input.web.mappers.SnackResponseMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,16 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
-import com.sap.common_lib.dto.response.RestApiErrorDTO;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Controller
 @RequestMapping("/api/v1/snacks")
@@ -37,6 +38,7 @@ public class SnackController {
     private final CreateSnackPort createSnackPort;
     private final UpdateSnackPort updateSnackPort;
     private final FindSnackPort findSnackPort;
+    private final UpdateStateSnackPort updateStateSnackPort;
 
     private final SnackResponseMapper snackResponseMapper;
 
@@ -169,5 +171,24 @@ public class SnackController {
         var snacks = findSnackPort.search(filter, page);
         var response = snackResponseMapper.toPageResponse(snacks);
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Cambiar estado de snack", description = "Activa o desactiva un snack existente.")
+    @Parameters({
+            @Parameter(name = "id", description = "Identificador del snack", required = true),
+            @Parameter(name = "active", description = "Nuevo estado activo del snack", required = true)
+    })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Estado del snack actualizado correctamente"),
+            @ApiResponse(responseCode = "404", description = "Snack no encontrado", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class)))
+    })
+    @SecurityRequirement(name = "bearerAuth")
+    @PatchMapping("/state/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CINEMA_ADMIN')")
+    public ResponseEntity<?> updateSnackState(
+            @PathVariable UUID id) {
+        updateStateSnackPort.updateStateSnackById(id);
+        return ResponseEntity.ok().build();
     }
 }
