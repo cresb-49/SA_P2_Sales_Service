@@ -102,7 +102,7 @@ public class CreateSaleCase implements CreateSaleCasePort {
         this.sendTicketRequests(ticketEvents);
         // Send paid request
         var paidAmount = savedSale.getPayableAmount();
-        sendPaidRequestPort.sendPaidRequest(savedSale.getClientId(), savedSale.getId(), paidAmount);
+        sendPaidRequestPort.sendPaidRequest(savedSale.getClientId(), savedSale.getCinemaId(), savedSale.getId(), paidAmount);
         // Return Sale with all relations
         return saleFactory.saleWithAllRelations(savedSale);
     }

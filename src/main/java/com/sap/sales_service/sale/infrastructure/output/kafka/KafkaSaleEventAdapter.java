@@ -37,10 +37,11 @@ public class KafkaSaleEventAdapter implements SendTicketRequestPort, SendNotific
     }
 
     @Override
-    public void sendPaidRequest(UUID userId, UUID saleId, BigDecimal amount) {
+    public void sendPaidRequest(UUID userId, UUID cinemaId, UUID saleId, BigDecimal amount) {
         System.out.println("Sending paid request for saleId: " + saleId + " with amount: " + amount);
         var paidPendingSaleEventDTO = new PaidPendingSaleEventDTO(
                 userId,
+                cinemaId,
                 saleId,
                 amount
         );
