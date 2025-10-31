@@ -76,8 +76,8 @@ public class TicketController {
             @ApiResponse(responseCode = "400", description = "Parámetros inválidos", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class))),
             @ApiResponse(responseCode = "500", description = "Error interno", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class)))
     })
-    @GetMapping("/public/cinema-function/{cinemaFunctionId}/seats/occupied/ids")
-    public ResponseEntity<QuantityResponseDTO> isSeatOccupied(@PathVariable UUID cinemaFunctionId) {
+    @GetMapping("/public/cinema-function/{cinemaFunctionId}/seats/occupied/qty")
+    public ResponseEntity<QuantityResponseDTO> getQuantitySeatsOccupied(@PathVariable UUID cinemaFunctionId) {
         var occupiedSeats = getOccupiedSetsByCinemaFunctionPort.getOccupiedSeatsByCinemaFunctionId(cinemaFunctionId);
         return ResponseEntity.ok(new QuantityResponseDTO(occupiedSeats));
     }
