@@ -43,7 +43,6 @@ class SaleTicketAdapterTest {
         var cinemaFunctionId = UUID.randomUUID();
         var cinemaId = UUID.randomUUID();
         var cinemaRoomId = UUID.randomUUID();
-        var seatId = UUID.randomUUID();
         var movieId = UUID.randomUUID();
         var userId = UUID.randomUUID();
         var now = LocalDateTime.now();
@@ -54,7 +53,6 @@ class SaleTicketAdapterTest {
                 cinemaFunctionId,
                 cinemaId,
                 cinemaRoomId,
-                seatId,
                 movieId,
                 Boolean.FALSE,
                 now,
@@ -67,7 +65,6 @@ class SaleTicketAdapterTest {
                 cinemaFunctionId,
                 cinemaId,
                 cinemaRoomId,
-                seatId,
                 movieId,
                 false,
                 now,
@@ -114,7 +111,6 @@ class SaleTicketAdapterTest {
         var cinemaFunctionId2 = UUID.randomUUID();
         var cinemaId2 = UUID.randomUUID();
         var cinemaRoomId2 = UUID.randomUUID();
-        var seatId2 = UUID.randomUUID();
         var movieId2 = UUID.randomUUID();
         var now2 = LocalDateTime.now();
 
@@ -124,7 +120,6 @@ class SaleTicketAdapterTest {
                 cinemaFunctionId2,
                 cinemaId2,
                 cinemaRoomId2,
-                seatId2,
                 movieId2,
                 Boolean.TRUE,
                 now2,
@@ -137,7 +132,6 @@ class SaleTicketAdapterTest {
                 cinemaFunctionId2,
                 cinemaId2,
                 cinemaRoomId2,
-                seatId2,
                 movieId2,
                 true,
                 now2,

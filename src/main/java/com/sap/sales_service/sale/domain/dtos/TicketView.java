@@ -9,7 +9,6 @@ public record TicketView(
         UUID cinemaFunctionId,
         UUID cinemaId,
         UUID cinemaRoomId,
-        UUID seatId,
         UUID movieId,
         Boolean used,
         LocalDateTime createdAt,

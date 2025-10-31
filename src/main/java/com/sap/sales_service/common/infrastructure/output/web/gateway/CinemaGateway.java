@@ -47,9 +47,4 @@ public class CinemaGateway implements CinemaGatewayPort {
                 LocalDateTime.of(2024, 7, 1, 20, 0)
         )).toList();
     }
-
-    @Override
-    public boolean verifySeatBySeatIdAndCinemaIdAndRoomIdAndFunctionId(UUID seatId, UUID cinemaId, UUID roomId, UUID functionId) {
-        return true;
-    }
 }

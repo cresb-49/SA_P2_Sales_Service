@@ -19,7 +19,6 @@ public class TicketViewResponseMapper {
                 domain.cinemaFunctionId(),
                 domain.cinemaId(),
                 domain.cinemaRoomId(),
-                domain.seatId(),
                 domain.movieId(),
                 domain.used(),
                 domain.createdAt(),

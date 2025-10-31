@@ -20,7 +20,6 @@ public class TicketEntitySpecs {
                 eqCinemaFunctionId(f.cinemaFunctionId()),
                 eqCinemaId(f.cinemaId()),
                 eqCinemaRoomId(f.cinemaRoomId()),
-                eqSeatId(f.seatId()),
                 eqMovieId(f.movieId()),
                 eqUsed(f.used()),
                 leCreatedAt(f.maxCreatedAt()),
@@ -111,10 +110,6 @@ public class TicketEntitySpecs {
 
     private static Specification<TicketEntity> eqCinemaRoomId(java.util.UUID cinemaRoomId) {
         return (root, q, cb) -> cinemaRoomId == null ? null : cb.equal(root.get("cinemaRoomId"), cinemaRoomId);
-    }
-
-    private static Specification<TicketEntity> eqSeatId(java.util.UUID seatId) {
-        return (root, q, cb) -> seatId == null ? null : cb.equal(root.get("seatId"), seatId);
     }
 
     private static Specification<TicketEntity> eqMovieId(java.util.UUID movieId) {

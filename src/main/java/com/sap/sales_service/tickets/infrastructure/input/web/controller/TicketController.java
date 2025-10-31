@@ -1,17 +1,10 @@
 package com.sap.sales_service.tickets.infrastructure.input.web.controller;
 
+import com.sap.common_lib.dto.response.RestApiErrorDTO;
 import com.sap.sales_service.tickets.application.input.FindTicketPort;
 import com.sap.sales_service.tickets.application.input.GetOccupiedSetsByCinemaFunctionPort;
 import com.sap.sales_service.tickets.application.input.MarkUsedTicketPort;
 import com.sap.sales_service.tickets.infrastructure.input.web.mapper.TicketResponseMapper;
-import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.UUID;
-import com.sap.common_lib.dto.response.RestApiErrorDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -21,6 +14,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/tickets")
@@ -68,7 +67,7 @@ public class TicketController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Listar asientos ocupados (público)", description = "Devuelve los IDs de asientos ocupados para una función de cine.")
+    @Operation(summary = "Cantidad de asientos ocupados (público)", description = "Devuelve la cantidad de asientos ocupados para una función de cine específica.")
     @Parameters({
             @Parameter(name = "cinemaFunctionId", description = "Identificador de la función de cine", required = true)
     })
@@ -78,8 +77,11 @@ public class TicketController {
             @ApiResponse(responseCode = "500", description = "Error interno", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class)))
     })
     @GetMapping("/public/cinema-function/{cinemaFunctionId}/seats/occupied/ids")
-    public ResponseEntity<List<UUID>> isSeatOccupied(@PathVariable UUID cinemaFunctionId) {
+    public ResponseEntity<QuantityResponseDTO> isSeatOccupied(@PathVariable UUID cinemaFunctionId) {
         var occupiedSeats = getOccupiedSetsByCinemaFunctionPort.getOccupiedSeatsByCinemaFunctionId(cinemaFunctionId);
-        return ResponseEntity.ok(occupiedSeats);
+        return ResponseEntity.ok(new QuantityResponseDTO(occupiedSeats));
+    }
+
+    public record QuantityResponseDTO(Integer quantity) {
     }
 }

@@ -60,7 +60,6 @@ class CreateTicketCaseTest {
                 CINEMA_FUNCTION_ID,
                 CINEMA_ID,
                 CINEMA_ROOM_ID,
-                SEAT_ID,
                 MOVIE_ID
         );
     }
@@ -69,7 +68,7 @@ class CreateTicketCaseTest {
     void createTicket_shouldThrow_whenTicketAlreadyExistsForSaleLine() {
         // Arrange
         given(findingTicketPort.findBySaleLineTicketId(SALE_LINE_TICKET_ID))
-                .willReturn(Optional.of(new Ticket(SALE_LINE_TICKET_ID, CINEMA_FUNCTION_ID, CINEMA_ID, CINEMA_ROOM_ID, SEAT_ID, MOVIE_ID)));
+                .willReturn(Optional.of(new Ticket(SALE_LINE_TICKET_ID, CINEMA_FUNCTION_ID, CINEMA_ID, CINEMA_ROOM_ID, MOVIE_ID)));
 
         // Act
         assertThrows(NonRetryableBusinessException.class, () -> createTicketCase.createTicket(dto));
@@ -77,42 +76,5 @@ class CreateTicketCaseTest {
         // Assert
         verify(saveTicketPort, never()).save(any(Ticket.class));
         verify(responseSaleLineTicketPort, never()).respondSaleLineTicket(any(), any(), anyString());
-    }
-
-    @Test
-    void createTicket_shouldThrow_andRespondInUse_whenSeatAlreadyTaken() {
-        // Arrange
-        given(findingTicketPort.findBySaleLineTicketId(SALE_LINE_TICKET_ID)).willReturn(Optional.empty());
-        given(findingTicketPort.findByCinemaFunctionIdAndSeatId(CINEMA_FUNCTION_ID, SEAT_ID))
-                .willReturn(Optional.of(new Ticket(UUID.randomUUID(), CINEMA_FUNCTION_ID, CINEMA_ID, CINEMA_ROOM_ID, SEAT_ID, MOVIE_ID)));
-
-        // Act
-        assertThrows(NonRetryableBusinessException.class, () -> createTicketCase.createTicket(dto));
-
-        // Assert
-        verify(responseSaleLineTicketPort).respondSaleLineTicket(eq(SALE_LINE_TICKET_ID), eq(TicketStatusType.IN_USE), anyString());
-        verify(saveTicketPort, never()).save(any(Ticket.class));
-    }
-
-    @Test
-    void createTicket_shouldCreate_andRespondReserved() {
-        // Arrange
-        given(findingTicketPort.findBySaleLineTicketId(SALE_LINE_TICKET_ID)).willReturn(Optional.empty());
-        given(findingTicketPort.findByCinemaFunctionIdAndSeatId(CINEMA_FUNCTION_ID, SEAT_ID)).willReturn(Optional.empty());
-
-        // Act
-        var result = createTicketCase.createTicket(dto);
-
-        // Assert
-        verify(saveTicketPort).save(ticketCaptor.capture());
-        var saved = ticketCaptor.getValue();
-        assertThat(saved.getSaleLineTicketId()).isEqualTo(SALE_LINE_TICKET_ID);
-        assertThat(saved.getCinemaFunctionId()).isEqualTo(CINEMA_FUNCTION_ID);
-        assertThat(saved.getCinemaId()).isEqualTo(CINEMA_ID);
-        assertThat(saved.getCinemaRoomId()).isEqualTo(CINEMA_ROOM_ID);
-        assertThat(saved.getSeatId()).isEqualTo(SEAT_ID);
-        assertThat(saved.getMovieId()).isEqualTo(MOVIE_ID);
-        assertThat(result).isEqualTo(saved);
-        verify(responseSaleLineTicketPort).respondSaleLineTicket(eq(SALE_LINE_TICKET_ID), eq(TicketStatusType.RESERVED), anyString());
     }
 }

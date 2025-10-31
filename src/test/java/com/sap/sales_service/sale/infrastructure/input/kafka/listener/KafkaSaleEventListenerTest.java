@@ -51,9 +51,8 @@ class KafkaSaleEventListenerTest {
         UUID functionId = UUID.randomUUID();
         UUID cinemaId = UUID.randomUUID();
         UUID roomId = UUID.randomUUID();
-        UUID seatId = UUID.randomUUID();
         UUID movieId = UUID.randomUUID();
-        var dto = new CreateTicketEventDTO(saleLineTicketId, functionId, cinemaId, roomId, seatId, movieId);
+        var dto = new CreateTicketEventDTO(saleLineTicketId, functionId, cinemaId, roomId, movieId);
 
         // When
         adapter.sendTicketRequest(dto);
@@ -69,7 +68,6 @@ class KafkaSaleEventListenerTest {
         assertThat(sent.cinemaFunctionId()).isEqualTo(functionId);
         assertThat(sent.cinemaId()).isEqualTo(cinemaId);
         assertThat(sent.cinemaRoomId()).isEqualTo(roomId);
-        assertThat(sent.seatId()).isEqualTo(seatId);
         assertThat(sent.movieId()).isEqualTo(movieId);
         // Ensure a *new* instance was sent (adapter clones the payload)
         assertThat(sent).isNotSameAs(dto);

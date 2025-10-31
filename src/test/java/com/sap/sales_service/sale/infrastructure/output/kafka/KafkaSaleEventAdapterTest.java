@@ -40,7 +40,6 @@ class KafkaSaleEventAdapterTest {
     private UUID cinemaFunctionId;
     private UUID cinemaId;
     private UUID cinemaRoomId;
-    private UUID seatId;
     private UUID movieId;
 
     @BeforeEach
@@ -49,7 +48,6 @@ class KafkaSaleEventAdapterTest {
         cinemaFunctionId = UUID.randomUUID();
         cinemaId = UUID.randomUUID();
         cinemaRoomId = UUID.randomUUID();
-        seatId = UUID.randomUUID();
         movieId = UUID.randomUUID();
     }
 
@@ -61,7 +59,6 @@ class KafkaSaleEventAdapterTest {
                 cinemaFunctionId,
                 cinemaId,
                 cinemaRoomId,
-                seatId,
                 movieId
         );
 

@@ -31,8 +31,6 @@ public class TicketEntity {
     @Column(nullable = false)
     private UUID cinemaRoomId;
     @Column(nullable = false)
-    private UUID seatId;
-    @Column(nullable = false)
     private UUID movieId;
     @Column(nullable = false)
     private boolean used;

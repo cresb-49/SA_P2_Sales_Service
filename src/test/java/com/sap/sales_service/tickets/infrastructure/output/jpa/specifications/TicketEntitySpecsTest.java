@@ -45,7 +45,6 @@ class TicketEntitySpecsTest {
     private Path<UUID> cinemaFunctionIdPath;
     private Path<UUID> cinemaIdPath;
     private Path<UUID> cinemaRoomIdPath;
-    private Path<UUID> seatIdPath;
     private Path<UUID> movieIdPath;
     private Path<Boolean> usedPath;
     private Path<LocalDateTime> createdAtPath;
@@ -66,7 +65,6 @@ class TicketEntitySpecsTest {
         cinemaFunctionIdPath = mockPath();
         cinemaIdPath = mockPath();
         cinemaRoomIdPath = mockPath();
-        seatIdPath = mockPath();
         movieIdPath = mockPath();
         usedPath = mockPath();
         createdAtPath = mockPath();
@@ -76,7 +74,6 @@ class TicketEntitySpecsTest {
         lenient().when(root.<UUID>get("cinemaFunctionId")).thenReturn(cinemaFunctionIdPath);
         lenient().when(root.<UUID>get("cinemaId")).thenReturn(cinemaIdPath);
         lenient().when(root.<UUID>get("cinemaRoomId")).thenReturn(cinemaRoomIdPath);
-        lenient().when(root.<UUID>get("seatId")).thenReturn(seatIdPath);
         lenient().when(root.<UUID>get("movieId")).thenReturn(movieIdPath);
         lenient().when(root.<Boolean>get("used")).thenReturn(usedPath);
         lenient().when(root.<LocalDateTime>get("createdAt")).thenReturn(createdAtPath);
@@ -130,7 +127,6 @@ class TicketEntitySpecsTest {
         var cinemaFunctionId = UUID.randomUUID();
         var cinemaId = UUID.randomUUID();
         var cinemaRoomId = UUID.randomUUID();
-        var seatId = UUID.randomUUID();
         var movieId = UUID.randomUUID();
         var used = Boolean.TRUE;
 
@@ -138,7 +134,6 @@ class TicketEntitySpecsTest {
         var cinemaFunctionPredicate = mock(Predicate.class);
         var cinemaPredicate = mock(Predicate.class);
         var cinemaRoomPredicate = mock(Predicate.class);
-        var seatPredicate = mock(Predicate.class);
         var moviePredicate = mock(Predicate.class);
         var usedPredicate = mock(Predicate.class);
 
@@ -146,7 +141,6 @@ class TicketEntitySpecsTest {
         when(cb.equal(cinemaFunctionIdPath, cinemaFunctionId)).thenReturn(cinemaFunctionPredicate);
         when(cb.equal(cinemaIdPath, cinemaId)).thenReturn(cinemaPredicate);
         when(cb.equal(cinemaRoomIdPath, cinemaRoomId)).thenReturn(cinemaRoomPredicate);
-        when(cb.equal(seatIdPath, seatId)).thenReturn(seatPredicate);
         when(cb.equal(movieIdPath, movieId)).thenReturn(moviePredicate);
         when(cb.equal(usedPath, used)).thenReturn(usedPredicate);
 
@@ -155,7 +149,6 @@ class TicketEntitySpecsTest {
                 .cinemaFunctionId(cinemaFunctionId)
                 .cinemaId(cinemaId)
                 .cinemaRoomId(cinemaRoomId)
-                .seatId(seatId)
                 .movieId(movieId)
                 .used(used)
                 .build();
@@ -167,7 +160,6 @@ class TicketEntitySpecsTest {
         verify(cb).equal(cinemaFunctionIdPath, cinemaFunctionId);
         verify(cb).equal(cinemaIdPath, cinemaId);
         verify(cb).equal(cinemaRoomIdPath, cinemaRoomId);
-        verify(cb).equal(seatIdPath, seatId);
         verify(cb).equal(movieIdPath, movieId);
         verify(cb).equal(usedPath, used);
         verify(cb, never()).lessThanOrEqualTo(any(Path.class), any(LocalDateTime.class));

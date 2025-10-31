@@ -58,7 +58,6 @@ class TicketJpaAdapterTest {
                 CINEMA_FUNCTION_ID,
                 CINEMA_ID,
                 CINEMA_ROOM_ID,
-                SEAT_ID,
                 MOVIE_ID,
                 false,
                 NOW,
@@ -70,7 +69,6 @@ class TicketJpaAdapterTest {
                 CINEMA_FUNCTION_ID,
                 CINEMA_ID,
                 CINEMA_ROOM_ID,
-                SEAT_ID,
                 MOVIE_ID,
                 false,
                 NOW,
@@ -140,20 +138,6 @@ class TicketJpaAdapterTest {
         // Assert
         assertThat(result).containsExactly(domain);
         verify(ticketEntityRepository).findBySaleLineTicketIdIn(ids);
-        verify(ticketMapper).toDomain(entity);
-    }
-
-    @Test
-    void findByCinemaFunctionIdAndSeatId_shouldMap_whenFound() {
-        // Arrange
-        given(ticketEntityRepository.findByCinemaFunctionIdAndSeatId(CINEMA_FUNCTION_ID, SEAT_ID))
-                .willReturn(Optional.of(entity));
-        given(ticketMapper.toDomain(entity)).willReturn(domain);
-        // Act
-        var result = adapter.findByCinemaFunctionIdAndSeatId(CINEMA_FUNCTION_ID, SEAT_ID);
-        // Assert
-        assertThat(result).contains(domain);
-        verify(ticketEntityRepository).findByCinemaFunctionIdAndSeatId(CINEMA_FUNCTION_ID, SEAT_ID);
         verify(ticketMapper).toDomain(entity);
     }
 

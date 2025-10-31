@@ -21,9 +21,9 @@ public class GetOccupiedSetsByCinemaFunction implements GetOccupiedSetsByCinemaF
     private final FindingByFilterPort findingByFilterPort;
 
     @Override
-    public List<UUID> getOccupiedSeatsByCinemaFunctionId(UUID cinemaFunctionId) {
+    public Integer getOccupiedSeatsByCinemaFunctionId(UUID cinemaFunctionId) {
         if (cinemaFunctionId == null) {
-            return List.of();
+            return 0;
         }
         var filter = TicketFilter.builder()
                 .cinemaFunctionId(cinemaFunctionId)
@@ -36,10 +36,6 @@ public class GetOccupiedSetsByCinemaFunction implements GetOccupiedSetsByCinemaF
                 .build();
         var entries2 = findingByFilterPort.findByFilter(filter2);
         List<Ticket> combined = Stream.concat(entries.stream(), entries2.stream()).toList();
-
-        return combined.stream()
-                .map(Ticket::getSeatId)
-                .distinct()
-                .toList();
+        return combined.size();
     }
 }

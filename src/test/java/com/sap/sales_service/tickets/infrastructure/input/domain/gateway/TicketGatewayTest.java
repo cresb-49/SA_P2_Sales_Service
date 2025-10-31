@@ -29,7 +29,6 @@ class TicketGatewayTest {
     private static final UUID CINEMA_FUNCTION_ID = UUID.fromString("20000000-0000-0000-0000-000000000001");
     private static final UUID CINEMA_ID = UUID.fromString("30000000-0000-0000-0000-000000000001");
     private static final UUID ROOM_ID = UUID.fromString("40000000-0000-0000-0000-000000000001");
-    private static final UUID SEAT_ID = UUID.fromString("50000000-0000-0000-0000-000000000001");
     private static final UUID MOVIE_ID = UUID.fromString("60000000-0000-0000-0000-000000000001");
 
     @Mock private FindingTicketPort findingTicketPort;
@@ -45,7 +44,6 @@ class TicketGatewayTest {
                     t.getCinemaFunctionId(),
                     t.getCinemaId(),
                     t.getCinemaRoomId(),
-                    t.getSeatId(),
                     t.getMovieId(),
                     t.isUsed(),
                     t.getCreatedAt(),
@@ -146,7 +144,6 @@ class TicketGatewayTest {
                 CINEMA_FUNCTION_ID,
                 CINEMA_ID,
                 ROOM_ID,
-                SEAT_ID,
                 MOVIE_ID
         );
         return new Ticket(
@@ -155,7 +152,6 @@ class TicketGatewayTest {
                 t.getCinemaFunctionId(),
                 t.getCinemaId(),
                 t.getCinemaRoomId(),
-                t.getSeatId(),
                 t.getMovieId(),
                 t.isUsed(),
                 LocalDateTime.now(),

@@ -247,7 +247,6 @@ public class CreateSaleCase implements CreateSaleCasePort {
                             function.id(),
                             function.cinemaId(),
                             function.cinemaRoomId(),
-                            ticketDTO.seatId(),
                             function.movieId()
                     );
                     return Map.entry(saleLineTicket, ticketEventDTO);

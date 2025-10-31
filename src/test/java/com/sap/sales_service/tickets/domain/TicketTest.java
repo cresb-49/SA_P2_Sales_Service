@@ -19,7 +19,6 @@ class TicketTest {
     private static final UUID FUNCTION_ID = UUID.fromString("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
     private static final UUID CINEMA_ID = UUID.fromString("cccccccc-cccc-cccc-cccc-cccccccccccc");
     private static final UUID ROOM_ID = UUID.fromString("dddddddd-dddd-dddd-dddd-dddddddddddd");
-    private static final UUID SEAT_ID = UUID.fromString("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee");
     private static final UUID MOVIE_ID = UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff");
 
     @Test
@@ -28,7 +27,7 @@ class TicketTest {
         var before = LocalDateTime.now().minusSeconds(1);
 
         // Act
-        var ticket = new Ticket(SALE_LINE_ID, FUNCTION_ID, CINEMA_ID, ROOM_ID, SEAT_ID, MOVIE_ID);
+        var ticket = new Ticket(SALE_LINE_ID, FUNCTION_ID, CINEMA_ID, ROOM_ID, MOVIE_ID);
 
         // Assert
         assertThat(ticket.getId()).isNotNull();
@@ -36,7 +35,6 @@ class TicketTest {
         assertThat(ticket.getCinemaFunctionId()).isEqualTo(FUNCTION_ID);
         assertThat(ticket.getCinemaId()).isEqualTo(CINEMA_ID);
         assertThat(ticket.getCinemaRoomId()).isEqualTo(ROOM_ID);
-        assertThat(ticket.getSeatId()).isEqualTo(SEAT_ID);
         assertThat(ticket.getMovieId()).isEqualTo(MOVIE_ID);
         assertThat(ticket.isUsed()).isFalse();
         assertThat(ticket.getCreatedAt()).isAfter(before);
@@ -46,7 +44,7 @@ class TicketTest {
     @Test
     void markAsUsed_shouldSetUsedTrue_andUpdateTimestamp() {
         // Arrange
-        var ticket = new Ticket(SALE_LINE_ID, FUNCTION_ID, CINEMA_ID, ROOM_ID, SEAT_ID, MOVIE_ID);
+        var ticket = new Ticket(SALE_LINE_ID, FUNCTION_ID, CINEMA_ID, ROOM_ID, MOVIE_ID);
         var previousUpdatedAt = ticket.getUpdatedAt();
 
         // Act
@@ -60,7 +58,7 @@ class TicketTest {
     @Test
     void markAsUsed_shouldThrow_whenAlreadyUsed() {
         // Arrange
-        var ticket = new Ticket(SALE_LINE_ID, FUNCTION_ID, CINEMA_ID, ROOM_ID, SEAT_ID, MOVIE_ID);
+        var ticket = new Ticket(SALE_LINE_ID, FUNCTION_ID, CINEMA_ID, ROOM_ID, MOVIE_ID);
         ticket.markAsUsed();
 
         // Act
@@ -74,8 +72,8 @@ class TicketTest {
     void equals_shouldBeTrue_whenSameId() {
         // Arrange
         var now = LocalDateTime.now();
-        var t1 = new Ticket(ID_1, SALE_LINE_ID, FUNCTION_ID, CINEMA_ID, ROOM_ID, SEAT_ID, MOVIE_ID, false, now, now);
-        var t2 = new Ticket(ID_1, SALE_LINE_ID, FUNCTION_ID, CINEMA_ID, ROOM_ID, SEAT_ID, MOVIE_ID, true, now.minusDays(1), now.minusDays(1));
+        var t1 = new Ticket(ID_1, SALE_LINE_ID, FUNCTION_ID, CINEMA_ID, ROOM_ID, MOVIE_ID, false, now, now);
+        var t2 = new Ticket(ID_1, SALE_LINE_ID, FUNCTION_ID, CINEMA_ID, ROOM_ID, MOVIE_ID, true, now.minusDays(1), now.minusDays(1));
 
         // Act
         var result = t1.equals(t2);
@@ -89,8 +87,8 @@ class TicketTest {
     void equals_shouldBeFalse_whenDifferentId() {
         // Arrange
         var now = LocalDateTime.now();
-        var t1 = new Ticket(ID_1, SALE_LINE_ID, FUNCTION_ID, CINEMA_ID, ROOM_ID, SEAT_ID, MOVIE_ID, false, now, now);
-        var t2 = new Ticket(ID_2, SALE_LINE_ID, FUNCTION_ID, CINEMA_ID, ROOM_ID, SEAT_ID, MOVIE_ID, false, now, now);
+        var t1 = new Ticket(ID_1, SALE_LINE_ID, FUNCTION_ID, CINEMA_ID, ROOM_ID, MOVIE_ID, false, now, now);
+        var t2 = new Ticket(ID_2, SALE_LINE_ID, FUNCTION_ID, CINEMA_ID, ROOM_ID, MOVIE_ID, false, now, now);
 
         // Act
         var result = t1.equals(t2);
@@ -103,7 +101,7 @@ class TicketTest {
     void equals_shouldBeFalse_whenNullOrDifferentClass() {
         // Arrange
         var now = LocalDateTime.now();
-        var ticket = new Ticket(ID_1, SALE_LINE_ID, FUNCTION_ID, CINEMA_ID, ROOM_ID, SEAT_ID, MOVIE_ID, false, now, now);
+        var ticket = new Ticket(ID_1, SALE_LINE_ID, FUNCTION_ID, CINEMA_ID, ROOM_ID, MOVIE_ID, false, now, now);
 
         // Act
         var resultNull = ticket.equals(null);

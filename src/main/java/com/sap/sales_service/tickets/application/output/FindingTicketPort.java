@@ -12,5 +12,4 @@ public interface FindingTicketPort {
     Optional<Ticket> findBySaleLineTicketId(UUID saleLineTicketId);
     List<Ticket> findByIds(List<UUID> ids);
     List<Ticket> findBySaleLineTicketIds(List<UUID> saleLineTicketIds);
-    Optional<Ticket> findByCinemaFunctionIdAndSeatId(UUID cinemaFunctionId, UUID seatId);
 }

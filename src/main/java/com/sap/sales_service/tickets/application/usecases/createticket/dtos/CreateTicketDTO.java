@@ -8,7 +8,6 @@ public record CreateTicketDTO(
         UUID cinemaFunctionId,
         UUID cinemaId,
         UUID cinemaRoomId,
-        UUID seatId,
         UUID movieId
 ) {
 }

@@ -7,7 +7,6 @@ public record CreateTicketEventDTO(
         UUID cinemaFunctionId,
         UUID cinemaId,
         UUID cinemaRoomId,
-        UUID seatId,
         UUID movieId
 ) {
 }

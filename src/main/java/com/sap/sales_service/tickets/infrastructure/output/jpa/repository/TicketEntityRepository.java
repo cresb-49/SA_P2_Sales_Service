@@ -11,5 +11,4 @@ import java.util.UUID;
 public interface TicketEntityRepository extends JpaRepository<TicketEntity, UUID>, JpaSpecificationExecutor<TicketEntity> {
     Optional<TicketEntity> findBySaleLineTicketId(UUID saleLineTicketId);
     List<TicketEntity> findBySaleLineTicketIdIn(List<UUID> saleLineTicketIds);
-    Optional<TicketEntity> findByCinemaFunctionIdAndSeatId(UUID cinemaFunctionId, UUID seatId);
 }

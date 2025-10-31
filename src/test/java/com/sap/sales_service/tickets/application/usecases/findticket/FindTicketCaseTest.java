@@ -26,7 +26,6 @@ class FindTicketCaseTest {
     private static final UUID FUNCTION_ID = UUID.fromString("66666666-7777-8888-9999-000000000000");
     private static final UUID CINEMA_ID = UUID.fromString("12345678-1234-1234-1234-1234567890ab");
     private static final UUID ROOM_ID = UUID.fromString("abcdefab-cdef-abcd-efab-cdefabcdefab");
-    private static final UUID SEAT_ID = UUID.fromString("0f0e0d0c-0b0a-0908-0706-050403020100");
     private static final UUID MOVIE_ID = UUID.fromString("deadbeef-dead-beef-dead-beefdeadbeef");
 
     @Mock
@@ -38,7 +37,7 @@ class FindTicketCaseTest {
     @Test
     void findById_shouldReturnTicket_whenFound() {
         // Arrange
-        Ticket ticket = new Ticket(SALE_LINE_TICKET_ID, FUNCTION_ID, CINEMA_ID, ROOM_ID, SEAT_ID, MOVIE_ID);
+        Ticket ticket = new Ticket(SALE_LINE_TICKET_ID, FUNCTION_ID, CINEMA_ID, ROOM_ID, MOVIE_ID);
         given(findingTicketPort.findById(TICKET_ID)).willReturn(Optional.of(ticket));
 
         // Act

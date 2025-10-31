@@ -24,30 +24,23 @@ public class CreateTicketCase implements CreateTicketPort {
     @Override
     public Ticket createTicket(CreateTicketDTO createTicketDTO) {
         // Find by SaleLineTicketId to avoid duplicates
-        Ticket existingTicket = findingTicketPort.findBySaleLineTicketId(createTicketDTO.saleLineTicketId()).orElse(null);
+        Ticket existingTicket = findingTicketPort.findBySaleLineTicketId(createTicketDTO.saleLineTicketId())
+                .orElse(null);
         if (existingTicket != null) {
-            throw new NonRetryableBusinessException("Ticket with SaleLineTicketId " + createTicketDTO.saleLineTicketId() + " already exists");
+            throw new NonRetryableBusinessException(
+                    "Ticket with SaleLineTicketId " + createTicketDTO.saleLineTicketId() + " already exists");
         }
-        // Verify if the seat is already taken for the given cinema function
-        findingTicketPort.findByCinemaFunctionIdAndSeatId(
-                createTicketDTO.cinemaFunctionId(),
-                createTicketDTO.seatId()
-        ).ifPresent(ticket -> {
-            responseSaleLineTicketPort.respondSaleLineTicket(createTicketDTO.saleLineTicketId(), TicketStatusType.IN_USE, "Seat is already taken");
-            throw new NonRetryableBusinessException("Seat with id " + createTicketDTO.seatId() + " is already taken for cinema function id " + createTicketDTO.cinemaFunctionId());
-        });
         // Create and save new ticket
         Ticket newTicket = new Ticket(
                 createTicketDTO.saleLineTicketId(),
                 createTicketDTO.cinemaFunctionId(),
                 createTicketDTO.cinemaId(),
                 createTicketDTO.cinemaRoomId(),
-                createTicketDTO.seatId(),
-                createTicketDTO.movieId()
-        );
+                createTicketDTO.movieId());
         saveTicketPort.save(newTicket);
         // Send response back to Sale Service
-        responseSaleLineTicketPort.respondSaleLineTicket(newTicket.getSaleLineTicketId(), TicketStatusType.RESERVED, "Ticket created successfully");
+        responseSaleLineTicketPort.respondSaleLineTicket(newTicket.getSaleLineTicketId(), TicketStatusType.RESERVED,
+                "Ticket created successfully");
         return newTicket;
     }
 }

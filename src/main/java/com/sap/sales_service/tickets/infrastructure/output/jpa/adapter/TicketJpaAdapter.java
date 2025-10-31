@@ -53,12 +53,6 @@ public class TicketJpaAdapter implements FindingTicketPort, SaveTicketPort, Coun
     }
 
     @Override
-    public Optional<Ticket> findByCinemaFunctionIdAndSeatId(UUID cinemaFunctionId, UUID seatId) {
-        return ticketEntityRepository.findByCinemaFunctionIdAndSeatId(cinemaFunctionId, seatId)
-                .map(ticketMapper::toDomain);
-    }
-
-    @Override
     public Ticket save(Ticket ticket) {
         var entity = ticketMapper.toEntity(ticket);
         var savedEntity = ticketEntityRepository.save(entity);

@@ -20,7 +20,6 @@ class KafkaTicketEventListenerTest {
     private static final UUID CINEMA_FUNCTION_ID = UUID.randomUUID();
     private static final UUID CINEMA_ID = UUID.randomUUID();
     private static final UUID CINEMA_ROOM_ID = UUID.randomUUID();
-    private static final UUID SEAT_ID = UUID.randomUUID();
     private static final UUID MOVIE_ID = UUID.randomUUID();
 
     @Test
@@ -33,7 +32,6 @@ class KafkaTicketEventListenerTest {
                 CINEMA_FUNCTION_ID,
                 CINEMA_ID,
                 CINEMA_ROOM_ID,
-                SEAT_ID,
                 MOVIE_ID
         );
 
@@ -48,7 +46,6 @@ class KafkaTicketEventListenerTest {
         assertThat(dto.cinemaFunctionId()).isEqualTo(CINEMA_FUNCTION_ID);
         assertThat(dto.cinemaId()).isEqualTo(CINEMA_ID);
         assertThat(dto.cinemaRoomId()).isEqualTo(CINEMA_ROOM_ID);
-        assertThat(dto.seatId()).isEqualTo(SEAT_ID);
         assertThat(dto.movieId()).isEqualTo(MOVIE_ID);
     }
 }

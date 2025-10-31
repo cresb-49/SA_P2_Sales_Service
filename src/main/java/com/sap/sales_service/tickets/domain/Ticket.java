@@ -15,7 +15,6 @@ public class Ticket {
     private final UUID cinemaFunctionId;
     private final UUID cinemaId;
     private final UUID cinemaRoomId;
-    private final UUID seatId;
     private final UUID movieId;
     private boolean used;
     private final LocalDateTime createdAt;
@@ -23,14 +22,13 @@ public class Ticket {
 
     public Ticket(
             UUID saleLineTicketId, UUID cinemaFunctionId, UUID cinemaId,
-            UUID cinemaRoomId, UUID seatId, UUID movieId
+            UUID cinemaRoomId, UUID movieId
     ) {
         this.id = UUID.randomUUID();
         this.saleLineTicketId = saleLineTicketId;
         this.cinemaFunctionId = cinemaFunctionId;
         this.cinemaId = cinemaId;
         this.cinemaRoomId = cinemaRoomId;
-        this.seatId = seatId;
         this.movieId = movieId;
         this.used = false;
         this.createdAt = LocalDateTime.now();

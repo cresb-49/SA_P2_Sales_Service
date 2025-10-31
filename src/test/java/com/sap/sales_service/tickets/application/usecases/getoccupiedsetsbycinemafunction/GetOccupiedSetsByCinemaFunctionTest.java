@@ -23,9 +23,6 @@ import static org.mockito.Mockito.*;
 class GetOccupiedSetsByCinemaFunctionTest {
 
     private static final UUID CINEMA_FUNCTION_ID = UUID.fromString("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
-    private static final UUID SEAT_1 = UUID.fromString("11111111-1111-1111-1111-111111111111");
-    private static final UUID SEAT_2 = UUID.fromString("22222222-2222-2222-2222-222222222222");
-    private static final UUID SEAT_3 = UUID.fromString("33333333-3333-3333-3333-333333333333");
     private static final UUID ANY_SALE_LINE_TICKET_ID = UUID.fromString("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
     private static final UUID ANY_CINEMA_ID = UUID.fromString("cccccccc-cccc-cccc-cccc-cccccccccccc");
     private static final UUID ANY_ROOM_ID = UUID.fromString("dddddddd-dddd-dddd-dddd-dddddddddddd");
@@ -41,13 +38,12 @@ class GetOccupiedSetsByCinemaFunctionTest {
         useCase = new GetOccupiedSetsByCinemaFunction(findingByFilterPort);
     }
 
-    private static Ticket ticketWithSeat(UUID seatId) {
+    private static Ticket ticket() {
         return new Ticket(
                 ANY_SALE_LINE_TICKET_ID,
                 CINEMA_FUNCTION_ID,
                 ANY_CINEMA_ID,
                 ANY_ROOM_ID,
-                seatId,
                 ANY_MOVIE_ID
         );
     }
@@ -59,21 +55,21 @@ class GetOccupiedSetsByCinemaFunctionTest {
     }
 
     @Test
-    void getOccupiedSeatsByCinemaFunctionId_shouldReturnEmpty_whenIdIsNull() {
+    void getOccupiedSeatsByCinemaFunctionId_shouldReturnZero_whenIdIsNull() {
         // Arrange
 
         // Act
         var result = useCase.getOccupiedSeatsByCinemaFunctionId(null);
 
         // Assert
-        assertThat(result).isEmpty();
+        assertThat(result).isEqualTo(0);
         verifyNoInteractions(findingByFilterPort);
     }
 
     @Test
-    void getOccupiedSeatsByCinemaFunctionId_shouldReturnReservedSeats_only() {
+    void getOccupiedSeatsByCinemaFunctionId_shouldCountReservedSeats_only() {
         // Arrange
-        var reserved = List.of(ticketWithSeat(SEAT_1), ticketWithSeat(SEAT_2));
+        var reserved = List.of(ticket(), ticket());
         given(findingByFilterPort.findByFilter(argThat(byStatusAndFunction(TicketStatusType.RESERVED))))
                 .willReturn(reserved);
         given(findingByFilterPort.findByFilter(argThat(byStatusAndFunction(TicketStatusType.PURCHASED))))
@@ -83,7 +79,7 @@ class GetOccupiedSetsByCinemaFunctionTest {
         var result = useCase.getOccupiedSeatsByCinemaFunctionId(CINEMA_FUNCTION_ID);
 
         // Assert
-        assertThat(result).containsExactlyInAnyOrder(SEAT_1, SEAT_2);
+        assertThat(result).isEqualTo(2);
         verify(findingByFilterPort, times(1))
                 .findByFilter(argThat(byStatusAndFunction(TicketStatusType.RESERVED)));
         verify(findingByFilterPort, times(1))
@@ -91,9 +87,9 @@ class GetOccupiedSetsByCinemaFunctionTest {
     }
 
     @Test
-    void getOccupiedSeatsByCinemaFunctionId_shouldReturnPurchasedSeats_only() {
+    void getOccupiedSeatsByCinemaFunctionId_shouldCountPurchasedSeats_only() {
         // Arrange
-        var purchased = List.of(ticketWithSeat(SEAT_1));
+        var purchased = List.of(ticket());
         given(findingByFilterPort.findByFilter(argThat(byStatusAndFunction(TicketStatusType.RESERVED))))
                 .willReturn(List.of());
         given(findingByFilterPort.findByFilter(argThat(byStatusAndFunction(TicketStatusType.PURCHASED))))
@@ -103,7 +99,7 @@ class GetOccupiedSetsByCinemaFunctionTest {
         var result = useCase.getOccupiedSeatsByCinemaFunctionId(CINEMA_FUNCTION_ID);
 
         // Assert
-        assertThat(result).containsExactly(SEAT_1);
+        assertThat(result).isEqualTo(1);
         verify(findingByFilterPort, times(1))
                 .findByFilter(argThat(byStatusAndFunction(TicketStatusType.RESERVED)));
         verify(findingByFilterPort, times(1))
@@ -111,10 +107,10 @@ class GetOccupiedSetsByCinemaFunctionTest {
     }
 
     @Test
-    void getOccupiedSeatsByCinemaFunctionId_shouldMergeAndDeduplicateSeats_fromBothStatuses() {
+    void getOccupiedSeatsByCinemaFunctionId_shouldSumCounts_fromBothStatuses_withoutDeduplication() {
         // Arrange
-        var reserved = List.of(ticketWithSeat(SEAT_1), ticketWithSeat(SEAT_2));
-        var purchased = List.of(ticketWithSeat(SEAT_2), ticketWithSeat(SEAT_3));
+        var reserved = List.of(ticket(), ticket());
+        var purchased = List.of(ticket(), ticket());
         given(findingByFilterPort.findByFilter(argThat(byStatusAndFunction(TicketStatusType.RESERVED))))
                 .willReturn(reserved);
         given(findingByFilterPort.findByFilter(argThat(byStatusAndFunction(TicketStatusType.PURCHASED))))
@@ -124,7 +120,7 @@ class GetOccupiedSetsByCinemaFunctionTest {
         var result = useCase.getOccupiedSeatsByCinemaFunctionId(CINEMA_FUNCTION_ID);
 
         // Assert
-        assertThat(result).containsExactlyInAnyOrder(SEAT_1, SEAT_2, SEAT_3);
+        assertThat(result).isEqualTo(4);
         verify(findingByFilterPort, times(1))
                 .findByFilter(argThat(byStatusAndFunction(TicketStatusType.RESERVED)));
         verify(findingByFilterPort, times(1))
@@ -132,7 +128,7 @@ class GetOccupiedSetsByCinemaFunctionTest {
     }
 
     @Test
-    void getOccupiedSeatsByCinemaFunctionId_shouldReturnEmpty_whenNoTicketsFound() {
+    void getOccupiedSeatsByCinemaFunctionId_shouldReturnZero_whenNoTicketsFound() {
         // Arrange
         given(findingByFilterPort.findByFilter(argThat(byStatusAndFunction(TicketStatusType.RESERVED))))
                 .willReturn(List.of());
@@ -143,7 +139,7 @@ class GetOccupiedSetsByCinemaFunctionTest {
         var result = useCase.getOccupiedSeatsByCinemaFunctionId(CINEMA_FUNCTION_ID);
 
         // Assert
-        assertThat(result).isEmpty();
+        assertThat(result).isEqualTo(0);
         verify(findingByFilterPort, times(1))
                 .findByFilter(argThat(byStatusAndFunction(TicketStatusType.RESERVED)));
         verify(findingByFilterPort, times(1))

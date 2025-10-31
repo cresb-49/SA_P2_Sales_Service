@@ -38,7 +38,6 @@ class MarkUsedTicketCaseTest {
     private static final UUID CINEMA_FUNCTION_ID = UUID.fromString("12345678-1234-1234-1234-123456789012");
     private static final UUID CINEMA_ID = UUID.fromString("aaaaaaaa-1111-2222-3333-bbbbbbbbbbbb");
     private static final UUID CINEMA_ROOM_ID = UUID.fromString("bbbbbbbb-2222-3333-4444-cccccccccccc");
-    private static final UUID SEAT_ID = UUID.fromString("cccccccc-3333-4444-5555-dddddddddddd");
     private static final UUID MOVIE_ID = UUID.fromString("dddddddd-4444-5555-6666-eeeeeeeeeeee");
 
     @Mock private FindingTicketPort findingTicketPort;
@@ -54,7 +53,6 @@ class MarkUsedTicketCaseTest {
                 CINEMA_FUNCTION_ID,
                 CINEMA_ID,
                 CINEMA_ROOM_ID,
-                SEAT_ID,
                 MOVIE_ID,
                 false,
                 LocalDateTime.now().minusMinutes(1),

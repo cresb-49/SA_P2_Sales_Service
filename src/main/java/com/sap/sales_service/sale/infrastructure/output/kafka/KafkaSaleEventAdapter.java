@@ -32,7 +32,6 @@ public class KafkaSaleEventAdapter implements SendTicketRequestPort, SendNotific
                 createTicketEventDTO.cinemaFunctionId(),
                 createTicketEventDTO.cinemaId(),
                 createTicketEventDTO.cinemaRoomId(),
-                createTicketEventDTO.seatId(),
                 createTicketEventDTO.movieId()
         );
         createTicketEventDTOKafkaTemplate.send(TopicConstants.REQUEST_TICKET_SALES_TOPIC, interfaceDTO);

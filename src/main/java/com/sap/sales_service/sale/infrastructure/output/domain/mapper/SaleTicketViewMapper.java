@@ -20,7 +20,6 @@ public class SaleTicketViewMapper {
                 domainView.cinemaFunctionId(),
                 domainView.cinemaId(),
                 domainView.cinemaRoomId(),
-                domainView.seatId(),
                 domainView.movieId(),
                 domainView.used(),
                 domainView.createdAt(),

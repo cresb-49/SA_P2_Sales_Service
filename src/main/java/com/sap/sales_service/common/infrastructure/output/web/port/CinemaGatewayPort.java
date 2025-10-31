@@ -9,5 +9,4 @@ public interface CinemaGatewayPort {
     boolean existsById(UUID cinemaId);
     FunctionWebViewDTO findFunctionById(UUID functionId);
     List<FunctionWebViewDTO> findFunctionsByIds(List<UUID> functionIds);
-    boolean verifySeatBySeatIdAndCinemaIdAndRoomIdAndFunctionId(UUID seatId, UUID cinemaId, UUID roomId, UUID functionId);
 }

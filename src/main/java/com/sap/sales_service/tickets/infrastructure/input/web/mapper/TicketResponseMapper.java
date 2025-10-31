@@ -22,7 +22,6 @@ public class TicketResponseMapper {
                 domain.getCinemaFunctionId(),
                 domain.getCinemaId(),
                 domain.getCinemaRoomId(),
-                domain.getSeatId(),
                 domain.getMovieId(),
                 domain.isUsed(),
                 domain.getCreatedAt(),

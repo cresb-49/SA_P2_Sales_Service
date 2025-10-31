@@ -26,7 +26,6 @@ public class KafkaTicketEventListener {
                 createTicketEventDTO.cinemaFunctionId(),
                 createTicketEventDTO.cinemaId(),
                 createTicketEventDTO.cinemaRoomId(),
-                createTicketEventDTO.seatId(),
                 createTicketEventDTO.movieId()
         );
         System.out.println("Received Kafka message: " + appDto.toString());
