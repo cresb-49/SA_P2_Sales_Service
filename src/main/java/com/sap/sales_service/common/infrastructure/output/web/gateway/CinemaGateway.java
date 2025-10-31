@@ -4,6 +4,7 @@ import com.sap.sales_service.common.infrastructure.output.web.dto.domain.Functio
 import com.sap.sales_service.common.infrastructure.output.web.port.CinemaGatewayPort;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,6 +14,9 @@ import java.util.UUID;
 @Component
 @AllArgsConstructor
 public class CinemaGateway implements CinemaGatewayPort {
+
+    private final WebClient.Builder webClient;
+    private static final String USER_SERVICE_URL = "http://gateway/api/v1/showtimes";
 
     private final UUID movieId = UUID.fromString("39ac6172-735b-4097-8f88-f307a83c4109");
     private final UUID cinemaId = UUID.fromString("9f8ce564-3846-49ed-bead-d73f4e1541be");
