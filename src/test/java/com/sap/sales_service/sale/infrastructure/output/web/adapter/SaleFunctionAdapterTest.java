@@ -52,9 +52,10 @@ class SaleFunctionAdapterTest {
                 UUID.randomUUID(),
                 BigDecimal.valueOf(10),
                 LocalDateTime.now().plusDays(1),
-                LocalDateTime.now().plusDays(1).plusHours(2)
+                LocalDateTime.now().plusDays(1).plusHours(2),
+                100
         );
-        FunctionWebViewDTO webDto = new FunctionWebViewDTO(expected.id(), expected.movieId(), expected.cinemaId(), expected.cinemaRoomId(), java.math.BigDecimal.ONE, expected.startTime(), expected.endTime());
+        FunctionWebViewDTO webDto = new FunctionWebViewDTO(expected.id(), expected.movieId(), expected.cinemaId(), expected.cinemaRoomId(), java.math.BigDecimal.ONE, expected.startTime(), expected.endTime(), expected.maxTicketsAvailable());
         given(cinemaGatewayPort.findFunctionById(eq(functionId))).willReturn(webDto);
         given(functionViewMapper.toDomain(eq(webDto))).willReturn(expected);
 
@@ -79,7 +80,8 @@ class SaleFunctionAdapterTest {
                         UUID.randomUUID(),
                         BigDecimal.valueOf(2),
                         LocalDateTime.now().plusDays(1),
-                        LocalDateTime.now().plusDays(1).plusHours(2)
+                        LocalDateTime.now().plusDays(1).plusHours(2),
+                        50
                 ),
                 new FunctionView(
                         ids.get(1),
@@ -88,12 +90,13 @@ class SaleFunctionAdapterTest {
                         UUID.randomUUID(),
                         BigDecimal.valueOf(3),
                         LocalDateTime.now().plusDays(2),
-                        LocalDateTime.now().plusDays(2).plusHours(2)
+                        LocalDateTime.now().plusDays(2).plusHours(2),
+                        75
                 )
         );
         List<FunctionWebViewDTO> webDtos = List.of(
-                new FunctionWebViewDTO(expectedList.get(0).id(), expectedList.get(0).movieId(), expectedList.get(0).cinemaId(), expectedList.get(0).cinemaRoomId(), java.math.BigDecimal.ONE, expectedList.get(0).startTime(), expectedList.get(0).endTime()),
-                new FunctionWebViewDTO(expectedList.get(1).id(), expectedList.get(1).movieId(), expectedList.get(1).cinemaId(), expectedList.get(1).cinemaRoomId(), java.math.BigDecimal.ONE, expectedList.get(1).startTime(), expectedList.get(1).endTime())
+                new FunctionWebViewDTO(expectedList.get(0).id(), expectedList.get(0).movieId(), expectedList.get(0).cinemaId(), expectedList.get(0).cinemaRoomId(), java.math.BigDecimal.ONE, expectedList.get(0).startTime(), expectedList.get(0).endTime(), expectedList.get(0).maxTicketsAvailable()),
+                new FunctionWebViewDTO(expectedList.get(1).id(), expectedList.get(1).movieId(), expectedList.get(1).cinemaId(), expectedList.get(1).cinemaRoomId(), java.math.BigDecimal.ONE, expectedList.get(1).startTime(), expectedList.get(1).endTime(), expectedList.get(1).maxTicketsAvailable())
         );
         given(cinemaGatewayPort.findFunctionsByIds(eq(ids))).willReturn(webDtos);
         given(functionViewMapper.toDomainList(eq(webDtos))).willReturn(expectedList);

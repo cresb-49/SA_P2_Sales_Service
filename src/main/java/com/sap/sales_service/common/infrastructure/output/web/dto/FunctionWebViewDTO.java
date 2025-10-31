@@ -11,7 +11,8 @@ public record FunctionWebViewDTO(
         UUID cinemaRoomId,
         BigDecimal price,
         LocalDateTime startTime,
-        LocalDateTime endTime
+        LocalDateTime endTime,
+        Integer ticketsAvailable
 ) {
 
 }

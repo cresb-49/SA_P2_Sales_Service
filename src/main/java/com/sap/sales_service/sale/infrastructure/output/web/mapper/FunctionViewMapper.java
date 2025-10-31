@@ -22,7 +22,8 @@ public class FunctionViewMapper {
                 dto.cinemaRoomId(),
                 dto.price(),
                 dto.startTime(),
-                dto.endTime()
+                dto.endTime(),
+                dto.ticketsAvailable()
         );
     }
 

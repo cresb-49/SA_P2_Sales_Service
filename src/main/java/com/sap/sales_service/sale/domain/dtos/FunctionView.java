@@ -11,7 +11,8 @@ public record FunctionView(
         UUID cinemaRoomId,
         BigDecimal price,
         LocalDateTime startTime,
-        LocalDateTime endTime
+        LocalDateTime endTime,
+        Integer maxTicketsAvailable
 ) {
 
 }

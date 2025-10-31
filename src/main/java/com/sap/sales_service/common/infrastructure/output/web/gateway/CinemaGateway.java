@@ -31,7 +31,8 @@ public class CinemaGateway implements CinemaGatewayPort {
                 UUID.fromString("d4f6e2e1-B56e-4c5e-9f6d-2f3e5b6c7d8e"),
                 BigDecimal.valueOf(75.00),
                 LocalDateTime.of(2024, 7, 1, 18, 0),
-                LocalDateTime.of(2024, 7, 1, 20, 0)
+                LocalDateTime.of(2024, 7, 1, 20, 0),
+                5
         );
     }
 
@@ -45,6 +46,7 @@ public class CinemaGateway implements CinemaGatewayPort {
                 BigDecimal.valueOf(75.00),
                 LocalDateTime.of(2024, 7, 1, 18, 0),
                 LocalDateTime.of(2024, 7, 1, 20, 0)
+                ,5
         )).toList();
     }
 }
