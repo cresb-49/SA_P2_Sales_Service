@@ -1,6 +1,6 @@
 package com.sap.sales_service.common.infrastructure.output.web.gateway;
 
-import com.sap.sales_service.common.infrastructure.output.web.dto.FunctionWebViewDTO;
+import com.sap.sales_service.common.infrastructure.output.web.dto.domain.FunctionWebViewDTO;
 import com.sap.sales_service.common.infrastructure.output.web.port.CinemaGatewayPort;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;

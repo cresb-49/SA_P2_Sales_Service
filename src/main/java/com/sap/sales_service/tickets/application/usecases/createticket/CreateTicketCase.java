@@ -3,14 +3,21 @@ package com.sap.sales_service.tickets.application.usecases.createticket;
 import com.sap.common_lib.common.enums.sale.TicketStatusType;
 import com.sap.common_lib.exception.NonRetryableBusinessException;
 import com.sap.sales_service.tickets.application.input.CreateTicketPort;
+import com.sap.sales_service.tickets.application.input.GetOccupiedSetsByCinemaFunctionPort;
+import com.sap.sales_service.tickets.application.output.FindingByFilterPort;
 import com.sap.sales_service.tickets.application.output.FindingTicketPort;
 import com.sap.sales_service.tickets.application.output.ResponseSaleLineTicketPort;
 import com.sap.sales_service.tickets.application.output.SaveTicketPort;
 import com.sap.sales_service.tickets.application.usecases.createticket.dtos.CreateTicketDTO;
 import com.sap.sales_service.tickets.domain.Ticket;
+import com.sap.sales_service.tickets.domain.TicketFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -20,6 +27,7 @@ public class CreateTicketCase implements CreateTicketPort {
     private final FindingTicketPort findingTicketPort;
     private final SaveTicketPort saveTicketPort;
     private final ResponseSaleLineTicketPort responseSaleLineTicketPort;
+    private final GetOccupiedSetsByCinemaFunctionPort getOccupiedSetsByCinemaFunctionPort;
 
     @Override
     public Ticket createTicket(CreateTicketDTO createTicketDTO) {

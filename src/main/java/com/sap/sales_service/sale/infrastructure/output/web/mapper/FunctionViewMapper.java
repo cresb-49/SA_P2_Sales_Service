@@ -1,6 +1,6 @@
 package com.sap.sales_service.sale.infrastructure.output.web.mapper;
 
-import com.sap.sales_service.common.infrastructure.output.web.dto.FunctionWebViewDTO;
+import com.sap.sales_service.common.infrastructure.output.web.dto.domain.FunctionWebViewDTO;
 import com.sap.sales_service.sale.domain.dtos.FunctionView;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;

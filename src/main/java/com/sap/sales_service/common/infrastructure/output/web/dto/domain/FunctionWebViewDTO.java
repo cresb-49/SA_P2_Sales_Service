@@ -1,4 +1,4 @@
-package com.sap.sales_service.common.infrastructure.output.web.dto;
+package com.sap.sales_service.common.infrastructure.output.web.dto.domain;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

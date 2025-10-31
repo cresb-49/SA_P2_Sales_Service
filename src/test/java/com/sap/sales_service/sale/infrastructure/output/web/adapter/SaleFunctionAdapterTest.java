@@ -1,6 +1,6 @@
 package com.sap.sales_service.sale.infrastructure.output.web.adapter;
 
-import com.sap.sales_service.common.infrastructure.output.web.dto.FunctionWebViewDTO;
+import com.sap.sales_service.common.infrastructure.output.web.dto.domain.FunctionWebViewDTO;
 import com.sap.sales_service.common.infrastructure.output.web.port.CinemaGatewayPort;
 import com.sap.sales_service.sale.domain.dtos.FunctionView;
 import com.sap.sales_service.sale.infrastructure.output.web.mapper.FunctionViewMapper;
