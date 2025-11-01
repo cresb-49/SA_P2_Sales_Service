@@ -113,6 +113,9 @@ public class CreateSaleCase implements CreateSaleCasePort {
             List<CreateSaleLineSnackDTO> snackDTOs,
             UUID cinemaId
     ) {
+        if (snackDTOs.isEmpty()) {
+            return List.of();
+        }
         // Get snack UUIDs
         var snackUUIDs = snackDTOs.stream().map(
                 CreateSaleLineSnackDTO::snackId
@@ -142,6 +145,9 @@ public class CreateSaleCase implements CreateSaleCasePort {
             List<CreateSaleLineTicketDTO> ticketDTOs,
             UUID cinemaId
     ) {
+        if (ticketDTOs.isEmpty()) {
+            return List.of();
+        }
         // Get function UUIDs
         var functionUUIDs = ticketDTOs.stream().map(
                 CreateSaleLineTicketDTO::cinemaFunctionId
