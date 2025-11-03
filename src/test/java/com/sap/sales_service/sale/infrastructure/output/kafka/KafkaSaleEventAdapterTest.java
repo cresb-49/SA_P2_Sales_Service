@@ -2,12 +2,10 @@ package com.sap.sales_service.sale.infrastructure.output.kafka;
 
 import com.sap.common_lib.dto.response.sales.events.PaidPendingSaleEventDTO;
 import com.sap.common_lib.dto.response.sales.events.RefoundAmountSaleEventDTO;
-import com.sap.common_lib.events.topics.TopicConstants;
-import com.sap.sales_service.sale.domain.dtos.events.CreateTicketEventDTO;
+import com.sap.sales_service.sale.domain.dtos.events.CreateTicketInternalViewEventDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -21,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 
 @ExtendWith(MockitoExtension.class)
 class KafkaSaleEventAdapterTest {
@@ -54,7 +51,7 @@ class KafkaSaleEventAdapterTest {
     @Test
     void sendTicketRequest_shouldForwardEventOnCorrectTopic() {
         // Arrange
-        var dto = new CreateTicketEventDTO(
+        var dto = new CreateTicketInternalViewEventDTO(
                 saleLineTicketId,
                 cinemaFunctionId,
                 cinemaId,

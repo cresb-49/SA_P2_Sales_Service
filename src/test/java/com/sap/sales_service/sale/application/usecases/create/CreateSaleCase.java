@@ -14,7 +14,7 @@ import com.sap.sales_service.sale.domain.SaleLineSnack;
 import com.sap.sales_service.sale.domain.SaleLineTicket;
 import com.sap.sales_service.sale.domain.dtos.FunctionView;
 import com.sap.sales_service.sale.domain.dtos.SnackView;
-import com.sap.sales_service.sale.domain.dtos.events.CreateTicketEventDTO;
+import com.sap.sales_service.sale.domain.dtos.events.CreateTicketInternalViewEventDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -167,8 +167,8 @@ public class CreateSaleCase implements CreateSaleCasePort {
      *
      * @param ticketEvents List of CreateTicketEventDTO
      */
-    private void sendTicketRequests(List<CreateTicketEventDTO> ticketEvents) {
-        for (CreateTicketEventDTO ticketEvent : ticketEvents) {
+    private void sendTicketRequests(List<CreateTicketInternalViewEventDTO> ticketEvents) {
+        for (CreateTicketInternalViewEventDTO ticketEvent : ticketEvents) {
             sendTicketRequestPort.sendTicketRequest(ticketEvent);
         }
     }
@@ -232,7 +232,7 @@ public class CreateSaleCase implements CreateSaleCasePort {
      * @param functionMap Map of FunctionView by UUID
      * @return List of SaleLineTicket
      */
-    private Map<SaleLineTicket, CreateTicketEventDTO> createSaleLinesTicketsAndEvents(
+    private Map<SaleLineTicket, CreateTicketInternalViewEventDTO> createSaleLinesTicketsAndEvents(
             List<CreateSaleLineTicketDTO> ticketDTOs,
             Map<UUID, FunctionView> functionMap
     ) {
@@ -244,7 +244,7 @@ public class CreateSaleCase implements CreateSaleCasePort {
                             1,
                             function.price()
                     );
-                    var ticketEventDTO = new CreateTicketEventDTO(
+                    var ticketEventDTO = new CreateTicketInternalViewEventDTO(
                             saleLineTicket.getId(),
                             function.id(),
                             function.cinemaId(),

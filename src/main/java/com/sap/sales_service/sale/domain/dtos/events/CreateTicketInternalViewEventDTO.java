@@ -2,7 +2,7 @@ package com.sap.sales_service.sale.domain.dtos.events;
 
 import java.util.UUID;
 
-public record CreateTicketEventDTO(
+public record CreateTicketInternalViewEventDTO(
         UUID saleLineTicketId,
         UUID cinemaFunctionId,
         UUID cinemaId,

@@ -6,7 +6,7 @@ import com.sap.common_lib.dto.response.notification.events.SendGenericMailEventD
 import com.sap.common_lib.dto.response.sales.events.PaidPendingSaleEventDTO;
 import com.sap.common_lib.dto.response.sales.events.RefoundAmountSaleEventDTO;
 import com.sap.common_lib.events.topics.TopicConstants;
-import com.sap.sales_service.sale.domain.dtos.events.CreateTicketEventDTO;
+import com.sap.sales_service.sale.domain.dtos.events.CreateTicketInternalViewEventDTO;
 import com.sap.sales_service.sale.infrastructure.output.kafka.KafkaSaleEventAdapter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,7 +52,7 @@ class KafkaSaleEventListenerTest {
         UUID cinemaId = UUID.randomUUID();
         UUID roomId = UUID.randomUUID();
         UUID movieId = UUID.randomUUID();
-        var dto = new CreateTicketEventDTO(saleLineTicketId, functionId, cinemaId, roomId, movieId);
+        var dto = new CreateTicketInternalViewEventDTO(saleLineTicketId, functionId, cinemaId, roomId, movieId);
 
         // When
         adapter.sendTicketRequest(dto);

@@ -8,7 +8,7 @@ import com.sap.sales_service.sale.application.ouput.RefoundAmountRequestPort;
 import com.sap.sales_service.sale.application.ouput.SendNotificationPort;
 import com.sap.sales_service.sale.application.ouput.SendPaidRequestPort;
 import com.sap.sales_service.sale.application.ouput.SendTicketRequestPort;
-import com.sap.sales_service.sale.domain.dtos.events.CreateTicketEventDTO;
+import com.sap.sales_service.sale.domain.dtos.events.CreateTicketInternalViewEventDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -26,13 +26,13 @@ public class KafkaSaleEventAdapter implements SendTicketRequestPort, SendNotific
     private final KafkaTemplate<String, SendGenericMailEventDTO> sendGenericMailEventDTOKafkaTemplate;
 
     @Override
-    public void sendTicketRequest(CreateTicketEventDTO createTicketEventDTO) {
+    public void sendTicketRequest(CreateTicketInternalViewEventDTO createTicketInternalViewEventDTO) {
         var interfaceDTO = new com.sap.common_lib.dto.response.sales.events.CreateTicketEventDTO(
-                createTicketEventDTO.saleLineTicketId(),
-                createTicketEventDTO.cinemaFunctionId(),
-                createTicketEventDTO.cinemaId(),
-                createTicketEventDTO.cinemaRoomId(),
-                createTicketEventDTO.movieId()
+                createTicketInternalViewEventDTO.saleLineTicketId(),
+                createTicketInternalViewEventDTO.cinemaFunctionId(),
+                createTicketInternalViewEventDTO.cinemaId(),
+                createTicketInternalViewEventDTO.cinemaRoomId(),
+                createTicketInternalViewEventDTO.movieId()
         );
         createTicketEventDTOKafkaTemplate.send(TopicConstants.REQUEST_TICKET_SALES_TOPIC, interfaceDTO);
     }

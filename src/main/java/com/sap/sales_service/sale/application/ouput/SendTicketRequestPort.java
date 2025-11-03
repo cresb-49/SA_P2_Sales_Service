@@ -1,7 +1,7 @@
 package com.sap.sales_service.sale.application.ouput;
 
-import com.sap.sales_service.sale.domain.dtos.events.CreateTicketEventDTO;
+import com.sap.sales_service.sale.domain.dtos.events.CreateTicketInternalViewEventDTO;
 
 public interface SendTicketRequestPort {
-    void sendTicketRequest(CreateTicketEventDTO createTicketEventDTO);
+    void sendTicketRequest(CreateTicketInternalViewEventDTO createTicketInternalViewEventDTO);
 }
