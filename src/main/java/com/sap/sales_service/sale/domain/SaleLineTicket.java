@@ -69,7 +69,7 @@ public class SaleLineTicket {
     }
 
     public void use() {
-        if (this.status != TicketStatusType.PENDING) {
+        if (!(this.status == TicketStatusType.PENDING || this.status == TicketStatusType.RESERVED)) {
             throw new RuntimeException("Only pending tickets can be used");
         }
         this.status = TicketStatusType.IN_USE;
@@ -85,7 +85,7 @@ public class SaleLineTicket {
     }
 
     public void purchase() {
-        if (this.status != TicketStatusType.RESERVED) {
+        if (!(this.status == TicketStatusType.RESERVED || this.status == TicketStatusType.PENDING)) {
             throw new RuntimeException("Only reserved tickets can be purchased");
         }
         this.status = TicketStatusType.PURCHASED;
