@@ -31,6 +31,16 @@ public class CinemaGateway implements CinemaGatewayPort {
     }
 
     @Override
+    public CinemaResponseDTO findCinemaById(UUID cinemaId) {
+        return webClient.build()
+                .get()
+                .uri(CINEMA_SERVICE_URL + "/public/" + cinemaId)
+                .retrieve()
+                .bodyToMono(CinemaResponseDTO.class)
+                .block();
+    }
+
+    @Override
     public ShowtimeResponseDTO findFunctionById(UUID functionId) {
         return webClient.build()
                 .get()

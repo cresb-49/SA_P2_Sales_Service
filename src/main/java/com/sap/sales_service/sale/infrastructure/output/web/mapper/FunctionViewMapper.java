@@ -21,7 +21,7 @@ public class FunctionViewMapper {
                 dto.cinemaMovie().movieId(),
                 dto.cinemaMovie().cinema().id(),
                 dto.hall().id(),
-                BigDecimal.valueOf(200),
+                dto.price(),
                 dto.startTime(),
                 dto.endTime(),
                 dto.ticketsAvailable()
