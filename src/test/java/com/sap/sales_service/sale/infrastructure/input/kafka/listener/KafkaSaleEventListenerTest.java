@@ -28,7 +28,7 @@ import static org.mockito.Mockito.*;
 class KafkaSaleEventListenerTest {
 
     @Mock
-    private KafkaTemplate<String, CreateTicketEventDTO> createTicketTemplate;
+    private KafkaTemplate<String, com.sap.common_lib.dto.response.sales.events.CreateTicketEventDTO> createTicketTemplate;
     @Mock
     private KafkaTemplate<String, PaidPendingSaleEventDTO> paidPendingTemplate;
     @Mock
@@ -59,7 +59,7 @@ class KafkaSaleEventListenerTest {
 
         // Then
         ArgumentCaptor<String> topicCap = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<CreateTicketEventDTO> dtoCap = ArgumentCaptor.forClass(CreateTicketEventDTO.class);
+        ArgumentCaptor<com.sap.common_lib.dto.response.sales.events.CreateTicketEventDTO> dtoCap = ArgumentCaptor.forClass(com.sap.common_lib.dto.response.sales.events.CreateTicketEventDTO.class);
         verify(createTicketTemplate, times(1)).send(topicCap.capture(), dtoCap.capture());
 
         assertThat(topicCap.getValue()).isEqualTo(TopicConstants.REQUEST_TICKET_SALES_TOPIC);

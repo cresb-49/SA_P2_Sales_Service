@@ -27,7 +27,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 class KafkaSaleEventAdapterTest {
 
     @Mock
-    private KafkaTemplate<String, CreateTicketEventDTO> createTicketEventDTOKafkaTemplate;
+    private KafkaTemplate<String, com.sap.common_lib.dto.response.sales.events.CreateTicketEventDTO> createTicketEventDTOKafkaTemplate;
     @Mock
     private KafkaTemplate<String, PaidPendingSaleEventDTO> paidPendingSaleEventDTOKafkaTemplate;
     @Mock

@@ -20,14 +20,14 @@ import java.util.UUID;
 @AllArgsConstructor
 public class KafkaSaleEventAdapter implements SendTicketRequestPort, SendNotificationPort, SendPaidRequestPort, RefoundAmountRequestPort {
 
-    private final KafkaTemplate<String, CreateTicketEventDTO> createTicketEventDTOKafkaTemplate;
+    private final KafkaTemplate<String, com.sap.common_lib.dto.response.sales.events.CreateTicketEventDTO> createTicketEventDTOKafkaTemplate;
     private final KafkaTemplate<String, PaidPendingSaleEventDTO> paidPendingSaleEventDTOKafkaTemplate;
     private final KafkaTemplate<String, RefoundAmountSaleEventDTO> refoundAmountSaleEventDTOKafkaTemplate;
     private final KafkaTemplate<String, SendGenericMailEventDTO> sendGenericMailEventDTOKafkaTemplate;
 
     @Override
     public void sendTicketRequest(CreateTicketEventDTO createTicketEventDTO) {
-        var interfaceDTO = new CreateTicketEventDTO(
+        var interfaceDTO = new com.sap.common_lib.dto.response.sales.events.CreateTicketEventDTO(
                 createTicketEventDTO.saleLineTicketId(),
                 createTicketEventDTO.cinemaFunctionId(),
                 createTicketEventDTO.cinemaId(),
