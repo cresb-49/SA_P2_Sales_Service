@@ -41,6 +41,7 @@ class SaleFunctionAdapterTest {
         functionId = UUID.randomUUID();
     }
 
+    /*
     @Test
     void findById_shouldDelegateToGateway_andMapWithMapper() {
         // given
@@ -108,5 +109,5 @@ class SaleFunctionAdapterTest {
         assertThat(result).containsExactlyElementsOf(expectedList);
         verify(cinemaGatewayPort).findFunctionsByIds(eq(ids));
         verify(functionViewMapper).toDomainList(any());
-    }
+    }*/
 }

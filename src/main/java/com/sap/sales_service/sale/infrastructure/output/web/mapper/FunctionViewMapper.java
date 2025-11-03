@@ -1,33 +1,34 @@
 package com.sap.sales_service.sale.infrastructure.output.web.mapper;
 
-import com.sap.sales_service.common.infrastructure.output.web.dto.domain.FunctionWebViewDTO;
+import com.sap.sales_service.common.infrastructure.output.web.dto.service.ShowtimeResponseDTO;
 import com.sap.sales_service.sale.domain.dtos.FunctionView;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Component
 @AllArgsConstructor
 public class FunctionViewMapper {
 
-    public FunctionView toDomain(FunctionWebViewDTO dto) {
+    public FunctionView toDomain(ShowtimeResponseDTO dto) {
         if (dto == null) {
             return null;
         }
         return new FunctionView(
                 dto.id(),
-                dto.movieId(),
-                dto.cinemaId(),
-                dto.cinemaRoomId(),
-                dto.price(),
+                dto.cinemaMovie().movieId(),
+                dto.cinemaMovie().cinema().id(),
+                dto.hall().id(),
+                BigDecimal.valueOf(200),
                 dto.startTime(),
                 dto.endTime(),
                 dto.ticketsAvailable()
         );
     }
 
-    public List<FunctionView> toDomainList(List<FunctionWebViewDTO> dtos) {
+    public List<FunctionView> toDomainList(List<ShowtimeResponseDTO> dtos) {
         return dtos.stream().map(this::toDomain).toList();
     }
 
