@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -22,6 +23,18 @@ public class MovieGateway implements MovieGatewayPort {
                 .uri(MOVIE_SERVICE_URL + "/public/" + movieId)
                 .retrieve()
                 .bodyToMono(MovieResponseDTO.class)
+                .block();
+    }
+
+    @Override
+    public List<MovieResponseDTO> getMoviesByIds(List<UUID> movieIds) {
+        return webClient.build()
+                .post()
+                .uri(MOVIE_SERVICE_URL + "/public/ids")
+                .bodyValue(movieIds)
+                .retrieve()
+                .bodyToFlux(MovieResponseDTO.class)
+                .collectList()
                 .block();
     }
 }
