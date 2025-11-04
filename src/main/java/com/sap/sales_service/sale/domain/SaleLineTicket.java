@@ -55,30 +55,28 @@ public class SaleLineTicket {
 
     public void validate() {
         if (saleId == null) {
-            throw new IllegalArgumentException("Sale ID cannot be null");
+            throw new IllegalArgumentException("El ID de la venta no puede ser nulo");
         }
         if (quantity <= 0) {
-            throw new IllegalArgumentException("Quantity must be greater than zero");
+            throw new IllegalArgumentException("La cantidad debe ser mayor que cero");
         }
         if (unitPrice.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Unit price must be non-negative");
+            throw new IllegalArgumentException("Las unidades de precio deben ser no negativas");
         }
         if (totalPrice.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Total price must be non-negative");
+            throw new IllegalArgumentException("El total del precio debe ser no negativo");
         }
     }
 
     public void use() {
-        if (!(this.status == TicketStatusType.PENDING)) {
-            throw new RuntimeException("Only pending tickets can be used");
-        }
+        //No importa el estado anterior la peticion de este ticken no puede aceptar ya que ese ticket ya se esta usando
         this.status = TicketStatusType.IN_USE;
         this.updatedAt = LocalDateTime.now();
     }
 
     public void cancel() {
         if (!(this.status == TicketStatusType.RESERVED || this.status == TicketStatusType.PENDING)) {
-            throw new RuntimeException("Only reserved or pending tickets can be cancelled");
+            throw new RuntimeException("Solo los tickets reservados o pendientes pueden ser cancelados");
         }
         this.status = TicketStatusType.CANCELLED;
         this.updatedAt = LocalDateTime.now();
@@ -86,15 +84,20 @@ public class SaleLineTicket {
 
     public void purchase() {
         if (!(this.status == TicketStatusType.RESERVED || this.status == TicketStatusType.PENDING)) {
-            throw new RuntimeException("Only reserved tickets can be purchased");
+            throw new RuntimeException("Los tickets solo pueden ser comprados si están en estado reservado o pendiente");
         }
         this.status = TicketStatusType.PURCHASED;
         this.updatedAt = LocalDateTime.now();
     }
 
     public void reserve() {
+        // Existen dos casos la linea ya esta pagada asi que no se cambia el estado
+        if (this.status == TicketStatusType.PURCHASED) {
+            return;
+        }
+        // Solo se pueden reservar tickets que esten pendientes
         if (this.status != TicketStatusType.PENDING) {
-            throw new RuntimeException("Only cancelled tickets can be reserved again");
+            throw new RuntimeException("Solo los tickets pendientes pueden ser reservados");
         }
         this.status = TicketStatusType.RESERVED;
         this.updatedAt = LocalDateTime.now();
@@ -102,7 +105,7 @@ public class SaleLineTicket {
 
     public void pend() {
         if (this.status != TicketStatusType.RESERVED) {
-            throw new RuntimeException("Only reserved tickets can be set to pending");
+            throw new RuntimeException("Solo los tickets reservados pueden ser puestos en estado pendiente");
         }
         this.status = TicketStatusType.PENDING;
         this.updatedAt = LocalDateTime.now();

@@ -4,20 +4,12 @@ import com.sap.common_lib.common.enums.sale.TicketStatusType;
 import com.sap.common_lib.exception.NonRetryableBusinessException;
 import com.sap.sales_service.tickets.application.input.CreateTicketPort;
 import com.sap.sales_service.tickets.application.input.GetOccupiedSetsByCinemaFunctionPort;
-import com.sap.sales_service.tickets.application.output.FindingByFilterPort;
-import com.sap.sales_service.tickets.application.output.FindingTicketPort;
-import com.sap.sales_service.tickets.application.output.ResponseSaleLineTicketPort;
-import com.sap.sales_service.tickets.application.output.SaveTicketPort;
+import com.sap.sales_service.tickets.application.output.*;
 import com.sap.sales_service.tickets.application.usecases.createticket.dtos.CreateTicketDTO;
 import com.sap.sales_service.tickets.domain.Ticket;
-import com.sap.sales_service.tickets.domain.TicketFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -28,6 +20,9 @@ public class CreateTicketCase implements CreateTicketPort {
     private final SaveTicketPort saveTicketPort;
     private final ResponseSaleLineTicketPort responseSaleLineTicketPort;
     private final GetOccupiedSetsByCinemaFunctionPort getOccupiedSetsByCinemaFunctionPort;
+    private final FindingShowtimePort findingShowtimePort;
+    private final FindingMoviePort findingMoviePort;
+    private final FindingCinemaPort findingCinemaPort;
 
     @Override
     public Ticket createTicket(CreateTicketDTO createTicketDTO) {
@@ -36,7 +31,20 @@ public class CreateTicketCase implements CreateTicketPort {
                 .orElse(null);
         if (existingTicket != null) {
             throw new NonRetryableBusinessException(
-                    "Ticket with SaleLineTicketId " + createTicketDTO.saleLineTicketId() + " already exists");
+                    "El boleto para la línea de venta con ID " + createTicketDTO.saleLineTicketId() + " ya existe.");
+        }
+        //find Movie
+        var movie = findingMoviePort.findMovieById(createTicketDTO.movieId());
+        var function = findingShowtimePort.findShowtimeById(createTicketDTO.cinemaFunctionId());
+        var cinema = findingCinemaPort.findCinemaById(createTicketDTO.cinemaId());
+        // Get occupied sets for the cinema function
+        var occupiedSets = getOccupiedSetsByCinemaFunctionPort.getOccupiedSeatsByCinemaFunctionId(
+                createTicketDTO.cinemaFunctionId());
+        if (occupiedSets >= function.maxCapacity()) {
+            // Send response back to Sale Service
+            var message = "No hay asientos disponibles para la función de cine de la película " + movie.name() + " en la función de hora " + function.startTime() + ", del cine " + cinema.name() + ".";
+            responseSaleLineTicketPort.respondSaleLineTicket(createTicketDTO.saleLineTicketId(), TicketStatusType.IN_USE, message);
+            throw new NonRetryableBusinessException(message);
         }
         // Create and save new ticket
         Ticket newTicket = new Ticket(
@@ -48,7 +56,7 @@ public class CreateTicketCase implements CreateTicketPort {
         saveTicketPort.save(newTicket);
         // Send response back to Sale Service
         responseSaleLineTicketPort.respondSaleLineTicket(newTicket.getSaleLineTicketId(), TicketStatusType.RESERVED,
-                "Ticket created successfully");
+                "El boleto " + newTicket.getId() + " ha sido creado y reservado exitosamente para la película " + movie.name() + " en la función de hora " + function.startTime() + ", del cine " + cinema.name() + ".");
         return newTicket;
     }
 }
