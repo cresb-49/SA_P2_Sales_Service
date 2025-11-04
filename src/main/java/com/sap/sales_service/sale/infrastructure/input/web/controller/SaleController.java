@@ -6,6 +6,7 @@ import com.sap.sales_service.sale.application.usecases.create.dtos.CreateSaleDTO
 import com.sap.sales_service.sale.application.usecases.find.dtos.SaleFilterDTO;
 import com.sap.sales_service.sale.infrastructure.input.web.mapper.SaleResponseMapper;
 import com.sap.sales_service.sale.infrastructure.input.web.mapper.SnackSalesReportResponseMapper;
+import com.sap.sales_service.sale.infrastructure.input.web.mapper.TopCinemaSalesReportResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -38,9 +39,11 @@ public class SaleController {
     private final RetryPaidSaleCasePort retryPaidSaleCasePort;
     private final SnackReportByCinemaCasePort snackReportByCinemaCasePort;
     private final SnackSalesReportCasePort snackSalesReportCasePort;
+    private final TopCinemaSalesReportCasePort topCinemaSalesReportCasePort;
     //Mapper
     private final SaleResponseMapper saleResponseMapper;
     private final SnackSalesReportResponseMapper snackSalesReportResponseMapper;
+    private final TopCinemaSalesReportResponseMapper topCinemaSalesReportResponseMapper;
 
     @Operation(summary = "Crear venta", description = "Crea una venta con líneas de boletos y/o snacks.")
     @ApiResponses({
@@ -188,6 +191,28 @@ public class SaleController {
     ) {
         var report = snackSalesReportCasePort.report(from, to, cinemaId);
         var responseDTO = snackSalesReportResponseMapper.toResponseDTO(report);
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    @Operation(summary = "Top de cines por ventas", description = "Obtiene el top de cines con mayor monto de ventas en un rango de fechas.")
+    @Parameters({
+            @Parameter(name = "from", description = "Fecha inicial (YYYY-MM-DD)", required = true),
+            @Parameter(name = "to", description = "Fecha final (YYYY-MM-DD)", required = true),
+            @Parameter(name = "limit", description = "Cantidad de cines a retornar", example = "5")
+    })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Reporte generado correctamente"),
+            @ApiResponse(responseCode = "400", description = "Parámetros inválidos", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class)))
+    })
+    @GetMapping("/reports/sales/cinemas/top")
+    public ResponseEntity<?> getTopCinemaSalesReport(
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
+            @RequestParam(defaultValue = "5") int limit
+    ) {
+        var report = topCinemaSalesReportCasePort.report(from, to, limit);
+        var responseDTO = topCinemaSalesReportResponseMapper.toResponseDTO(report);
         return ResponseEntity.ok(responseDTO);
     }
 
