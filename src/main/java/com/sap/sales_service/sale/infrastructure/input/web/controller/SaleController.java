@@ -6,6 +6,7 @@ import com.sap.sales_service.sale.application.usecases.create.dtos.CreateSaleDTO
 import com.sap.sales_service.sale.application.usecases.find.dtos.SaleFilterDTO;
 import com.sap.sales_service.sale.infrastructure.input.web.mapper.SaleResponseMapper;
 import com.sap.sales_service.sale.infrastructure.input.web.mapper.SnackSalesReportResponseMapper;
+import com.sap.sales_service.sale.infrastructure.input.web.mapper.TicketSalesReportResponseMapper;
 import com.sap.sales_service.sale.infrastructure.input.web.mapper.TopCinemaSalesReportResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -40,10 +41,12 @@ public class SaleController {
     private final SnackReportByCinemaCasePort snackReportByCinemaCasePort;
     private final SnackSalesReportCasePort snackSalesReportCasePort;
     private final TopCinemaSalesReportCasePort topCinemaSalesReportCasePort;
+    private final TicketSalesReportCasePort ticketSalesReportCasePort;
     //Mapper
     private final SaleResponseMapper saleResponseMapper;
     private final SnackSalesReportResponseMapper snackSalesReportResponseMapper;
     private final TopCinemaSalesReportResponseMapper topCinemaSalesReportResponseMapper;
+    private final TicketSalesReportResponseMapper ticketSalesReportResponseMapper;
 
     @Operation(summary = "Crear venta", description = "Crea una venta con líneas de boletos y/o snacks.")
     @ApiResponses({
@@ -191,6 +194,26 @@ public class SaleController {
     ) {
         var report = snackSalesReportCasePort.report(from, to, cinemaId);
         var responseDTO = snackSalesReportResponseMapper.toResponseDTO(report);
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    @Operation(summary = "Reporte de boletos vendidos", description = "Obtiene la cantidad de boletos vendidos agrupados por función en un intervalo de fechas.")
+    @Parameters({
+            @Parameter(name = "from", description = "Fecha inicial (YYYY-MM-DD)", required = true),
+            @Parameter(name = "to", description = "Fecha final (YYYY-MM-DD)", required = true)
+    })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Reporte generado correctamente"),
+            @ApiResponse(responseCode = "400", description = "Parámetros inválidos", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class)))
+    })
+    @GetMapping("/reports/sales/tickets")
+    public ResponseEntity<?> generateTicketSalesReport(
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to
+    ) {
+        var report = ticketSalesReportCasePort.report(from, to);
+        var responseDTO = ticketSalesReportResponseMapper.toResponseDTO(report);
         return ResponseEntity.ok(responseDTO);
     }
 
