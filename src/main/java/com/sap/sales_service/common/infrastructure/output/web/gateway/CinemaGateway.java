@@ -1,5 +1,6 @@
 package com.sap.sales_service.common.infrastructure.output.web.gateway;
 
+import com.sap.sales_service.common.infrastructure.output.web.dto.CinemaIdsRequestDTO;
 import com.sap.sales_service.common.infrastructure.output.web.dto.service.CinemaResponseDTO;
 import com.sap.sales_service.common.infrastructure.output.web.dto.service.ShowtimeResponseDTO;
 import com.sap.sales_service.common.infrastructure.output.web.port.CinemaGatewayPort;
@@ -37,6 +38,18 @@ public class CinemaGateway implements CinemaGatewayPort {
                 .uri(CINEMA_SERVICE_URL + "/public/" + cinemaId)
                 .retrieve()
                 .bodyToMono(CinemaResponseDTO.class)
+                .block();
+    }
+
+    @Override
+    public List<CinemaResponseDTO> findCinemasByIds(List<UUID> cinemaIds) {
+        return webClient.build()
+                .post()
+                .uri(CINEMA_SERVICE_URL + "/public/by-ids")
+                .bodyValue(new CinemaIdsRequestDTO(cinemaIds))
+                .retrieve()
+                .bodyToFlux(CinemaResponseDTO.class)
+                .collectList()
                 .block();
     }
 

@@ -5,6 +5,7 @@ import com.sap.sales_service.sale.application.input.*;
 import com.sap.sales_service.sale.application.usecases.create.dtos.CreateSaleDTO;
 import com.sap.sales_service.sale.application.usecases.find.dtos.SaleFilterDTO;
 import com.sap.sales_service.sale.infrastructure.input.web.mapper.SaleResponseMapper;
+import com.sap.sales_service.sale.infrastructure.input.web.mapper.SnackSalesReportResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -36,8 +37,10 @@ public class SaleController {
     private final ClaimTicketMoneySaleLineCasePort claimTicketMoneySaleLineCasePort;
     private final RetryPaidSaleCasePort retryPaidSaleCasePort;
     private final SnackReportByCinemaCasePort snackReportByCinemaCasePort;
+    private final SnackSalesReportCasePort snackSalesReportCasePort;
     //Mapper
     private final SaleResponseMapper saleResponseMapper;
+    private final SnackSalesReportResponseMapper snackSalesReportResponseMapper;
 
     @Operation(summary = "Crear venta", description = "Crea una venta con líneas de boletos y/o snacks.")
     @ApiResponses({
@@ -166,7 +169,7 @@ public class SaleController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "Generar reporte de snacks por cine", description = "Genera un reporte resumen de ventas de snacks para un cine en un rango de fechas.")
+    @Operation(summary = "Reporte de snacks vendidos por cine", description = "Obtiene la cantidad de snacks vendidos en un intervalo de fechas para un cine específico.")
     @Parameters({
             @Parameter(name = "cinemaId", description = "Identificador del cine", required = true),
             @Parameter(name = "from", description = "Fecha inicial (YYYY-MM-DD)", required = true),
@@ -177,14 +180,15 @@ public class SaleController {
             @ApiResponse(responseCode = "400", description = "Parámetros inválidos", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class))),
             @ApiResponse(responseCode = "500", description = "Error interno", content = @Content(schema = @Schema(implementation = RestApiErrorDTO.class)))
     })
-    @PostMapping("/reports/sales/snacks/cinema/{cinemaId}")
-    public ResponseEntity<?> generateSnackReportByCinema(
+    @GetMapping("/reports/sales/snacks/cinema/{cinemaId}")
+    public ResponseEntity<?> generateSnackSalesReport(
             @PathVariable UUID cinemaId,
             @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
             @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to
     ) {
-        var reportDTO = snackReportByCinemaCasePort.report(from, to, cinemaId);
-        return ResponseEntity.ok(reportDTO);
+        var report = snackSalesReportCasePort.report(from, to, cinemaId);
+        var responseDTO = snackSalesReportResponseMapper.toResponseDTO(report);
+        return ResponseEntity.ok(responseDTO);
     }
 
     @Operation(summary = "Descargar reporte de snacks (PDF)", description = "Genera y descarga el reporte de snacks en formato PDF para un cine en un rango de fechas.")

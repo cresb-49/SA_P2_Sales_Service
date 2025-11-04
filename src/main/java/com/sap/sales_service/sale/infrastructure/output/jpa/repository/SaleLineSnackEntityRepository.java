@@ -1,6 +1,7 @@
 package com.sap.sales_service.sale.infrastructure.output.jpa.repository;
 
 import com.sap.sales_service.sale.infrastructure.output.jpa.dto.ports.SnackSalesByCinemaView;
+import com.sap.sales_service.sale.infrastructure.output.jpa.dto.ports.SnackSalesSummaryView;
 import com.sap.sales_service.sale.infrastructure.output.jpa.entity.SaleLineSnackEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -28,6 +29,24 @@ public interface SaleLineSnackEntityRepository extends JpaRepository<SaleLineSna
             ORDER BY s.cinema_id, totalAmount DESC
             """, nativeQuery = true)
     List<SnackSalesByCinemaView> findSnackSalesByCinema(
+            @Param("from") LocalDateTime from,
+            @Param("to") LocalDateTime to,
+            @Param("cinemaId") UUID cinemaId
+    );
+
+    @Query(value = """
+            SELECT
+                sls.snack_id      AS snackId,
+                SUM(sls.quantity) AS totalQuantity
+            FROM sales s
+            JOIN sale_line_snacks sls ON sls.sale_id = s.id
+            WHERE s.cinema_id = :cinemaId
+              AND s.paid_at >= :from
+              AND s.paid_at <  :to
+            GROUP BY sls.snack_id
+            ORDER BY totalQuantity DESC
+            """, nativeQuery = true)
+    List<SnackSalesSummaryView> findSnackSalesSummary(
             @Param("from") LocalDateTime from,
             @Param("to") LocalDateTime to,
             @Param("cinemaId") UUID cinemaId

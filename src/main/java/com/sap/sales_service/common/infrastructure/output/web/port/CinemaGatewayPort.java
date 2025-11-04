@@ -10,6 +10,7 @@ import java.util.UUID;
 public interface CinemaGatewayPort {
     boolean existsById(UUID cinemaId);
     CinemaResponseDTO findCinemaById(UUID cinemaId);
+    List<CinemaResponseDTO> findCinemasByIds(List<UUID> cinemaIds);
     ShowtimeResponseDTO findFunctionById(UUID functionId);
     List<ShowtimeResponseDTO> findFunctionsByIds(List<UUID> functionIds);
 }

@@ -6,6 +6,7 @@ import com.sap.sales_service.sale.domain.SaleLineSnack;
 import com.sap.sales_service.sale.infrastructure.output.jpa.entity.SaleLineSnackEntity;
 import com.sap.sales_service.sale.infrastructure.output.jpa.mapper.SaleLineSnackMapper;
 import com.sap.sales_service.sale.infrastructure.output.jpa.mapper.SnackSalesByCinemaMapper;
+import com.sap.sales_service.sale.infrastructure.output.jpa.mapper.SnackSalesSummaryMapper;
 import com.sap.sales_service.sale.infrastructure.output.jpa.repository.SaleLineSnackEntityRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,11 +36,16 @@ class SaleLineSnackJpaAdapterTest {
     @Mock
     private SnackSalesByCinemaMapper snackSalesByCinemaMapper;
 
+    @Mock
     private SaleLineSnackJpaAdapter adapter;
+
+    @Mock
+    private SnackSalesSummaryMapper snackSalesSummaryMapper;
+
 
     @BeforeEach
     void setUp() {
-        adapter = new SaleLineSnackJpaAdapter(repository, mapper, snackSalesByCinemaMapper);
+        adapter = new SaleLineSnackJpaAdapter(repository, mapper, snackSalesByCinemaMapper, snackSalesSummaryMapper);
     }
 
     @Test
