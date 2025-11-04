@@ -1,0 +1,56 @@
+<jasperReport name="top_cinema_sales_report" language="java" pageWidth="595" pageHeight="842" columnWidth="515" leftMargin="40" rightMargin="40" topMargin="40" bottomMargin="40" uuid="f2e63cfb-8ea4-44b4-9440-f544829324fe">
+	<parameter name="from" class="java.time.LocalDate"/>
+	<parameter name="to" class="java.time.LocalDate"/>
+	<parameter name="reportTitle" class="java.lang.String"/>
+	<parameter name="limit" class="java.lang.Integer"/>
+	<field name="cinemaId" class="java.util.UUID"/>
+	<field name="totalAmount" class="java.math.BigDecimal"/>
+	<field name="totalSales" class="java.lang.Long"/>
+	<field name="cinema" class="com.sap.sales_service.sale.domain.dtos.CinemaView"/>
+	<title height="95">
+		<element kind="textField" uuid="c3d9086b-78b1-4f1a-a1d4-5cb799f9d5af" x="0" y="10" width="515" height="20" fontSize="16.0" bold="true" hTextAlign="Center">
+			<expression><![CDATA[$P{reportTitle}]]></expression>
+		</element>
+		<element kind="textField" uuid="e4b6a088-2c72-4b60-bf3d-54a28f7a7a16" x="0" y="35" width="515" height="15" fontSize="10.0" italic="true" hTextAlign="Center">
+			<expression><![CDATA["Periodo: " + ($P{from} == null ? "" : $P{from}.toString()) + " al " + ($P{to} == null ? "" : $P{to}.toString())]]></expression>
+		</element>
+		<element kind="textField" uuid="54a3d951-6074-48b1-8f17-064739900a9b" x="0" y="55" width="515" height="15" fontSize="10.0" hTextAlign="Center">
+			<expression><![CDATA["Mostrando top " + ($P{limit} == null ? "" : $P{limit}.toString()) + " cines"]]></expression>
+		</element>
+	</title>
+	<columnHeader height="20">
+		<element kind="staticText" uuid="5029d647-efdd-4af6-93be-8ef1c673519b" x="0" y="0" width="60" height="15" bold="true" hTextAlign="Left">
+			<text><![CDATA[#]]></text>
+		</element>
+		<element kind="staticText" uuid="8a448bed-0d7d-49d8-9bf6-c8781fe7d752" x="60" y="0" width="220" height="15" bold="true" hTextAlign="Left">
+			<text><![CDATA[Cine]]></text>
+		</element>
+		<element kind="staticText" uuid="73d6cfc8-1deb-4f1f-bd72-f5439d0724a2" x="280" y="0" width="115" height="15" bold="true" hTextAlign="Right">
+			<text><![CDATA[Total vendido]]></text>
+		</element>
+		<element kind="staticText" uuid="5b2e98d7-8a2a-4ffd-8f6b-938d00f8e5f1" x="395" y="0" width="120" height="15" bold="true" hTextAlign="Right">
+			<text><![CDATA[Transacciones]]></text>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<element kind="textField" uuid="2a495771-0614-4fe5-bd47-e52812a4169d" x="0" y="0" width="60" height="15" fontSize="8.0" textAdjust="StretchHeight" hTextAlign="Left" vTextAlign="Middle">
+				<expression><![CDATA[$V{REPORT_COUNT}.toString()]]></expression>
+			</element>
+			<element kind="textField" uuid="f30ef1a5-479d-4ec5-bd05-7ebe4cbfb78c" x="60" y="0" width="220" height="15" fontSize="8.0" textAdjust="ScaleFont" hTextAlign="Left" vTextAlign="Middle">
+				<expression><![CDATA[$F{cinema} == null ? "-" : $F{cinema}.name()]]></expression>
+			</element>
+			<element kind="textField" uuid="ef81f9a8-3df1-4ee8-94d4-6b3711c972a7" x="280" y="0" width="115" height="15" fontSize="8.0" textAdjust="ScaleFont" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{totalAmount} == null ? "-" : $F{totalAmount}.toString()]]></expression>
+			</element>
+			<element kind="textField" uuid="7ad18b73-d046-4ce6-8503-b36623c13cf1" x="395" y="0" width="120" height="15" fontSize="8.0" textAdjust="ScaleFont" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{totalSales} == null ? "0" : $F{totalSales}.toString()]]></expression>
+			</element>
+		</band>
+	</detail>
+	<pageFooter height="20">
+		<element kind="textField" uuid="bfecb055-8941-4d67-81ee-ab98cf283179" x="415" y="0" width="100" height="15" fontSize="9.0" italic="true" hTextAlign="Right">
+			<expression><![CDATA["Página " + $V{PAGE_NUMBER}]]></expression>
+		</element>
+	</pageFooter>
+</jasperReport>

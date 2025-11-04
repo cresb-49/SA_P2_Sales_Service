@@ -6,4 +6,6 @@ import java.time.LocalDate;
 
 public interface TicketSalesReportCasePort {
     TicketSalesReportDTO report(LocalDate from, LocalDate to);
+
+    byte[] generateReportFile(LocalDate from, LocalDate to);
 }

@@ -7,4 +7,5 @@ import java.util.UUID;
 
 public interface SnackSalesReportCasePort {
     SnackSalesReportDTO report(LocalDate from, LocalDate to, UUID cinemaId);
+    byte[] generateReportFile(LocalDate from, LocalDate to, UUID cinemaId);
 }

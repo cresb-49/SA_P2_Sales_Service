@@ -13,4 +13,23 @@ public record SnackSalesByCinemaDTO(
         //Optional
         SnackView snack
 ) {
+    public UUID getCinemaId() {
+        return cinemaId;
+    }
+
+    public UUID getSnackId() {
+        return snackId;
+    }
+
+    public Long getTotalQuantity() {
+        return totalQuantity;
+    }
+
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public SnackView getSnack() {
+        return snack;
+    }
 }

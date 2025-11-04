@@ -6,4 +6,11 @@ public record CinemaView(
         UUID id,
         String name
 ) {
+    public UUID getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

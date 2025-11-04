@@ -9,4 +9,15 @@ public record SnackSalesSummaryDTO(
         Long totalQuantity,
         SnackView snack
 ) {
+    public UUID getSnackId() {
+        return snackId;
+    }
+
+    public Long getTotalQuantity() {
+        return totalQuantity;
+    }
+
+    public SnackView getSnack() {
+        return snack;
+    }
 }

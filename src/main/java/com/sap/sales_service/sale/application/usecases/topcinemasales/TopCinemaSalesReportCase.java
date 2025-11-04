@@ -1,5 +1,6 @@
 package com.sap.sales_service.sale.application.usecases.topcinemasales;
 
+import com.sap.sales_service.common.infrastructure.output.jasper.port.JasperReportServicePort;
 import com.sap.sales_service.sale.application.factory.TopCinemaSalesReportFactory;
 import com.sap.sales_service.sale.application.input.TopCinemaSalesReportCasePort;
 import com.sap.sales_service.sale.application.ouput.TopCinemaSalesReportPort;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -19,6 +21,10 @@ public class TopCinemaSalesReportCase implements TopCinemaSalesReportCasePort {
 
     private final TopCinemaSalesReportPort topCinemaSalesReportPort;
     private final TopCinemaSalesReportFactory topCinemaSalesReportFactory;
+    private final JasperReportServicePort jasperReportService;
+
+    private static final String REPORT_TITLE = "Top de Cines por Ventas";
+    private static final String REPORT_TEMPLATE = "top_cinema_sales_report";
 
     @Override
     public TopCinemaSalesReportDTO report(LocalDate from, LocalDate to, int limit) {
@@ -34,5 +40,17 @@ public class TopCinemaSalesReportCase implements TopCinemaSalesReportCasePort {
                 from,
                 to
         );
+    }
+
+    @Override
+    public byte[] generateReportFile(LocalDate from, LocalDate to, int limit) {
+        int topLimit = limit <= 0 ? 5 : limit;
+        TopCinemaSalesReportDTO report = report(from, to, topLimit);
+        var params = new HashMap<String, Object>();
+        params.put("reportTitle", REPORT_TITLE);
+        params.put("from", from);
+        params.put("to", to);
+        params.put("limit", topLimit);
+        return jasperReportService.toPdf(REPORT_TEMPLATE, report.cinemas(), params);
     }
 }

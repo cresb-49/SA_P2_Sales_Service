@@ -13,4 +13,31 @@ public record SnackView(
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
+    public UUID getId() {
+        return id;
+    }
+
+    public UUID getCinemaId() {
+        return cinemaId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
 }

@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -197,6 +198,21 @@ public class SaleController {
         return ResponseEntity.ok(responseDTO);
     }
 
+    @GetMapping("/reports/sales/snacks/cinema/{cinemaId}/pdf")
+    public ResponseEntity<byte[]> generateSnackSalesReportPdf(
+            @PathVariable UUID cinemaId,
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to
+    ) {
+        var pdfBytes = snackSalesReportCasePort.generateReportFile(from, to, cinemaId);
+        String fileName = "snack_sales_report_cinema_" + cinemaId + "to_" + to + "_from_" + from + ".pdf";
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdfBytes);
+    }
+
+
     @Operation(summary = "Reporte de boletos vendidos", description = "Obtiene la cantidad de boletos vendidos agrupados por función en un intervalo de fechas.")
     @Parameters({
             @Parameter(name = "from", description = "Fecha inicial (YYYY-MM-DD)", required = true),
@@ -215,6 +231,19 @@ public class SaleController {
         var report = ticketSalesReportCasePort.report(from, to);
         var responseDTO = ticketSalesReportResponseMapper.toResponseDTO(report);
         return ResponseEntity.ok(responseDTO);
+    }
+
+    @GetMapping("/reports/sales/tickets/pdf")
+    public ResponseEntity<byte[]> generateTicketSalesReportPdf(
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to
+    ) {
+        var pdfBytes = ticketSalesReportCasePort.generateReportFile(from, to);
+        String fileName = "ticket_sales_report_from_" + from + "_to_" + to + ".pdf";
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdfBytes);
     }
 
     @Operation(summary = "Top de cines por ventas", description = "Obtiene el top de cines con mayor monto de ventas en un rango de fechas.")
@@ -237,6 +266,20 @@ public class SaleController {
         var report = topCinemaSalesReportCasePort.report(from, to, limit);
         var responseDTO = topCinemaSalesReportResponseMapper.toResponseDTO(report);
         return ResponseEntity.ok(responseDTO);
+    }
+
+    @GetMapping("/reports/sales/cinemas/top/pdf")
+    public ResponseEntity<byte[]> getTopCinemaSalesReportPdf(
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
+            @RequestParam(defaultValue = "5") int limit
+    ) {
+        var pdfBytes = topCinemaSalesReportCasePort.generateReportFile(from, to, limit);
+        String fileName = "top_cinema_sales_report_from_" + from + "_to_" + to + ".pdf";
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdfBytes);
     }
 
     @Operation(summary = "Descargar reporte de snacks (PDF)", description = "Genera y descarga el reporte de snacks en formato PDF para un cine en un rango de fechas.")

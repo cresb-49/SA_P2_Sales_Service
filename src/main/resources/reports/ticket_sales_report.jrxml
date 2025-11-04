@@ -1,0 +1,65 @@
+<jasperReport name="ticket_sales_report" language="java" pageWidth="595" pageHeight="842" columnWidth="515" leftMargin="40" rightMargin="40" topMargin="40" bottomMargin="40" uuid="3c36fa18-6517-4f63-8421-91ce42d38b05">
+	<parameter name="from" class="java.time.LocalDate"/>
+	<parameter name="to" class="java.time.LocalDate"/>
+	<parameter name="reportTitle" class="java.lang.String"/>
+	<parameter name="totalTickets" class="java.lang.Long"/>
+	<field name="functionId" class="java.util.UUID"/>
+	<field name="cinemaId" class="java.util.UUID"/>
+	<field name="cinemaRoomId" class="java.util.UUID"/>
+	<field name="movieId" class="java.util.UUID"/>
+	<field name="ticketsSold" class="java.lang.Long"/>
+	<field name="showtime" class="com.sap.sales_service.sale.domain.dtos.reports.views.TicketShowtimeReportView"/>
+	<field name="movie" class="com.sap.sales_service.sale.domain.dtos.reports.views.MovieSummaryView"/>
+	<title height="110">
+		<element kind="textField" uuid="6f2da32b-a7de-4f2c-bfa3-3a53c641942d" x="0" y="10" width="515" height="20" fontSize="16.0" bold="true" hTextAlign="Center">
+			<expression><![CDATA[$P{reportTitle}]]></expression>
+		</element>
+		<element kind="textField" uuid="389f54d0-2bd8-4c4e-ab88-0caf354657d3" x="0" y="40" width="515" height="15" fontSize="10.0" italic="true" hTextAlign="Center">
+			<expression><![CDATA["Periodo: " + ($P{from} == null ? "" : $P{from}.toString()) + " al " + ($P{to} == null ? "" : $P{to}.toString())]]></expression>
+		</element>
+		<element kind="textField" uuid="b492e76c-4749-452f-b686-209ce1988869" x="0" y="60" width="515" height="15" fontSize="10.0" hTextAlign="Center">
+			<expression><![CDATA["Total boletos vendidos: " + ($P{totalTickets} == null ? "0" : $P{totalTickets}.toString())]]></expression>
+		</element>
+	</title>
+	<columnHeader height="20">
+		<element kind="staticText" uuid="5fa96662-8b64-4d11-aea8-8c1ea07ff0d7" x="0" y="0" width="140" height="15" bold="true" hTextAlign="Left">
+			<text><![CDATA[Película]]></text>
+		</element>
+		<element kind="staticText" uuid="0e9a58f9-a76d-46e4-8dd5-0d4cf54ee780" x="140" y="0" width="115" height="15" bold="true" hTextAlign="Left">
+			<text><![CDATA[Cine]]></text>
+		</element>
+		<element kind="staticText" uuid="43b48fd1-4f9f-4f00-903d-11df7685a27d" x="255" y="0" width="80" height="15" bold="true" hTextAlign="Left">
+			<text><![CDATA[Sala]]></text>
+		</element>
+		<element kind="staticText" uuid="b75e0364-9587-4b34-bf7f-5063a9db1509" x="335" y="0" width="90" height="15" bold="true" hTextAlign="Left">
+			<text><![CDATA[Inicio]]></text>
+		</element>
+		<element kind="staticText" uuid="99a341db-0001-4373-ac37-1819fbab1141" x="425" y="0" width="90" height="15" bold="true" hTextAlign="Right">
+			<text><![CDATA[Boletos]]></text>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<element kind="textField" uuid="24a0589b-e360-43f6-9d14-3b698f67006e" x="0" y="0" width="140" height="15" fontSize="8.0" textAdjust="ScaleFont" hTextAlign="Left" vTextAlign="Middle">
+				<expression><![CDATA[$F{movie} == null ? "-" : $F{movie}.title()]]></expression>
+			</element>
+			<element kind="textField" uuid="c9c723b8-f2ba-4b03-aa3b-df1ca31d7562" x="140" y="0" width="115" height="15" fontSize="8.0" textAdjust="ScaleFont" hTextAlign="Left" vTextAlign="Middle">
+				<expression><![CDATA[$F{showtime} == null || $F{showtime}.cinema() == null ? "-" : $F{showtime}.cinema().name()]]></expression>
+			</element>
+			<element kind="textField" uuid="619ebb09-1d9d-43b9-bceb-d2ac7863023f" x="255" y="0" width="80" height="15" fontSize="8.0" textAdjust="ScaleFont" hTextAlign="Left" vTextAlign="Middle">
+				<expression><![CDATA[$F{showtime} == null ? "-" : $F{showtime}.hallName()]]></expression>
+			</element>
+			<element kind="textField" uuid="aba3acc7-12a6-4703-9138-9af84ca0fa15" x="335" y="0" width="90" height="15" fontSize="8.0" textAdjust="ScaleFont" hTextAlign="Left" vTextAlign="Middle">
+				<expression><![CDATA[$F{showtime} == null || $F{showtime}.startTime() == null ? "-" : $F{showtime}.startTime().format(java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"))]]></expression>
+			</element>
+			<element kind="textField" uuid="4432bdb0-1adc-4113-897f-e9d872916c3a" x="425" y="0" width="90" height="15" fontSize="8.0" textAdjust="ScaleFont" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{ticketsSold} == null ? "0" : $F{ticketsSold}.toString()]]></expression>
+			</element>
+		</band>
+	</detail>
+	<pageFooter height="20">
+		<element kind="textField" uuid="ebfd42ae-72a0-48bf-9fbc-63937c1d777c" x="415" y="0" width="100" height="15" fontSize="9.0" italic="true" hTextAlign="Right">
+			<expression><![CDATA["Página " + $V{PAGE_NUMBER}]]></expression>
+		</element>
+	</pageFooter>
+</jasperReport>

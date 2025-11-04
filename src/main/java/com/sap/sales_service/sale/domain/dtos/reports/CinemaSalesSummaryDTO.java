@@ -11,4 +11,19 @@ public record CinemaSalesSummaryDTO(
         Long totalSales,
         CinemaView cinema
 ) {
+    public UUID getCinemaId() {
+        return cinemaId;
+    }
+
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public Long getTotalSales() {
+        return totalSales;
+    }
+
+    public CinemaView getCinema() {
+        return cinema;
+    }
 }

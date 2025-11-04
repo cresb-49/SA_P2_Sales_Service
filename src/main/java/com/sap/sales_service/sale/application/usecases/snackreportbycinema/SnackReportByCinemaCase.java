@@ -1,5 +1,6 @@
 package com.sap.sales_service.sale.application.usecases.snackreportbycinema;
 
+import com.sap.sales_service.common.infrastructure.output.jasper.port.JasperReportServicePort;
 import com.sap.sales_service.sale.application.factory.SnackReportByCinemaFactory;
 import com.sap.sales_service.sale.application.input.SnackReportByCinemaCasePort;
 import com.sap.sales_service.sale.application.ouput.FindCinemaPort;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.UUID;
 
 @Service
@@ -22,6 +24,10 @@ public class SnackReportByCinemaCase implements SnackReportByCinemaCasePort {
     private final SnackReportByCinemaFactory snackReportByCinemaFactory;
     private final SnackReportByCinema snackReportByCinema;
     private final FindCinemaPort findCinemaPort;
+    private final JasperReportServicePort jasperReportService;
+
+    private static final String REPORT_TITLE = "Ventas de Snacks por Cine";
+    private static final String REPORT_TEMPLATE = "snack_report_by_cinema";
 
     @Override
     public SnackReportByCinemaReportDTO report(LocalDate from, LocalDate to, UUID cinemaId) {
@@ -50,6 +56,13 @@ public class SnackReportByCinemaCase implements SnackReportByCinemaCasePort {
 
     @Override
     public byte[] generateReportFile(LocalDate from, LocalDate to, UUID cinemaId) {
-        return new byte[0];
+        SnackReportByCinemaReportDTO report = report(from, to, cinemaId);
+        var params = new HashMap<String, Object>();
+        params.put("reportTitle", REPORT_TITLE);
+        params.put("from", from);
+        params.put("to", to);
+        params.put("cinema", report.cinema() == null ? "Desconocido" : report.cinema().name());
+        params.put("totalAmount", report.totalAmount() == null ? java.math.BigDecimal.ZERO : report.totalAmount());
+        return jasperReportService.toPdf(REPORT_TEMPLATE, report.snackSalesByCinemaDTOs(), params);
     }
 }

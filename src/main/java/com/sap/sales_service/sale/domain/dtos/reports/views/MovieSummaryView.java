@@ -6,4 +6,11 @@ public record MovieSummaryView(
         UUID id,
         String title
 ) {
+    public UUID getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
 }

@@ -1,0 +1,59 @@
+<jasperReport name="snack_sales_report" language="java" pageWidth="595" pageHeight="842" columnWidth="515" leftMargin="40" rightMargin="40" topMargin="40" bottomMargin="40" uuid="e4d6b5c9-8f3e-4f89-b5dc-2bc387934c0e">
+	<parameter name="from" class="java.time.LocalDate"/>
+	<parameter name="to" class="java.time.LocalDate"/>
+	<parameter name="cinema" class="java.lang.String"/>
+	<parameter name="reportTitle" class="java.lang.String"/>
+	<parameter name="totalQuantity" class="java.lang.Long"/>
+	<field name="snackId" class="java.util.UUID"/>
+	<field name="totalQuantity" class="java.lang.Long"/>
+	<field name="snack" class="com.sap.sales_service.sale.domain.dtos.SnackView"/>
+	<title height="110">
+		<element kind="textField" uuid="66edc094-29c6-45b1-8a0d-2489ba5def7c" x="0" y="10" width="515" height="20" fontSize="16.0" bold="true" hTextAlign="Center">
+			<expression><![CDATA[$P{reportTitle}]]></expression>
+		</element>
+		<element kind="textField" uuid="c4937b05-e09e-44ab-b5dd-3fa4c638db42" x="0" y="40" width="515" height="15" fontSize="10.0" italic="true" hTextAlign="Center">
+			<expression><![CDATA["Periodo: " + ($P{from} == null ? "" : $P{from}.toString()) + " al " + ($P{to} == null ? "" : $P{to}.toString())]]></expression>
+		</element>
+		<element kind="textField" uuid="93a1709f-3e20-45b9-9691-e50437aeecd9" x="0" y="60" width="515" height="15" fontSize="10.0" hTextAlign="Center">
+			<expression><![CDATA["Cine: " + ($P{cinema} == null ? "Todos" : $P{cinema})]]></expression>
+		</element>
+		<element kind="textField" uuid="5519390a-9b0e-4faa-9a03-0bfc3f0264c0" x="0" y="80" width="515" height="15" fontSize="10.0" hTextAlign="Center">
+			<expression><![CDATA["Total snacks vendidos: " + ($P{totalQuantity} == null ? "0" : $P{totalQuantity}.toString())]]></expression>
+		</element>
+	</title>
+	<columnHeader height="20">
+		<element kind="staticText" uuid="a493416f-0ee7-40aa-9b28-d8f32bfcdbed" x="0" y="0" width="215" height="15" bold="true" hTextAlign="Left">
+			<text><![CDATA[Snack]]></text>
+		</element>
+		<element kind="staticText" uuid="f2bc2f53-7443-4e5e-82f9-fae4d292743b" x="215" y="0" width="100" height="15" bold="true" hTextAlign="Right">
+			<text><![CDATA[Precio]]></text>
+		</element>
+		<element kind="staticText" uuid="54a63e2d-0371-4fe4-8925-177dea620dea" x="315" y="0" width="100" height="15" bold="true" hTextAlign="Right">
+			<text><![CDATA[Cantidad]]></text>
+		</element>
+		<element kind="staticText" uuid="ccaaea02-1528-45f1-826a-dc6c9164bdb7" x="415" y="0" width="100" height="15" bold="true" hTextAlign="Right">
+			<text><![CDATA[Total]]></text>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<element kind="textField" uuid="f83a7992-9a79-463d-8ed2-7a1dd6fa04a9" x="0" y="0" width="215" height="15" fontSize="8.0" textAdjust="ScaleFont" hTextAlign="Left" vTextAlign="Middle">
+				<expression><![CDATA[$F{snack} == null ? "Sin información" : $F{snack}.name()]]></expression>
+			</element>
+			<element kind="textField" uuid="9cf14040-772b-4c11-93fe-5d343cf15fc4" x="215" y="0" width="100" height="15" fontSize="8.0" textAdjust="ScaleFont" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{snack} == null || $F{snack}.price() == null ? "-" : $F{snack}.price().toString()]]></expression>
+			</element>
+			<element kind="textField" uuid="3b6f3772-6f33-4cb4-8837-6b299692ed1e" x="315" y="0" width="100" height="15" fontSize="8.0" textAdjust="ScaleFont" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{totalQuantity} == null ? "0" : $F{totalQuantity}.toString()]]></expression>
+			</element>
+			<element kind="textField" uuid="08f62a22-605d-46ca-96ec-4fbea118a64b" x="415" y="0" width="100" height="15" fontSize="8.0" textAdjust="ScaleFont" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{snack} == null || $F{snack}.price() == null || $F{totalQuantity} == null ? "-" : $F{snack}.price().multiply(java.math.BigDecimal.valueOf($F{totalQuantity})).toString()]]></expression>
+			</element>
+		</band>
+	</detail>
+	<pageFooter height="20">
+		<element kind="textField" uuid="3b20688b-34d2-4da6-83f2-0cfa1ab96ca3" x="415" y="0" width="100" height="15" fontSize="9.0" italic="true" hTextAlign="Right">
+			<expression><![CDATA["Página " + $V{PAGE_NUMBER}]]></expression>
+		</element>
+	</pageFooter>
+</jasperReport>

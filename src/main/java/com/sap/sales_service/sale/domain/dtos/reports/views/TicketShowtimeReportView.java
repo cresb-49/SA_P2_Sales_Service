@@ -14,4 +14,31 @@ public record TicketShowtimeReportView(
         LocalDateTime endTime,
         Integer ticketsAvailable
 ) {
+    public UUID getFunctionId() {
+        return functionId;
+    }
+
+    public UUID getHallId() {
+        return hallId;
+    }
+
+    public String getHallName() {
+        return hallName;
+    }
+
+    public CinemaView getCinema() {
+        return cinema;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public Integer getTicketsAvailable() {
+        return ticketsAvailable;
+    }
 }

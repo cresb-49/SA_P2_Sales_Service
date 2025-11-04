@@ -1,0 +1,55 @@
+<jasperReport name="snack_report_by_cinema" language="java" pageWidth="595" pageHeight="842" columnWidth="515" leftMargin="40" rightMargin="40" topMargin="40" bottomMargin="40" uuid="cbf857b7-a8b2-4bb2-9700-e437ebaf54f1">
+	<parameter name="from" class="java.time.LocalDate"/>
+	<parameter name="to" class="java.time.LocalDate"/>
+	<parameter name="cinema" class="java.lang.String"/>
+	<parameter name="reportTitle" class="java.lang.String"/>
+	<parameter name="totalAmount" class="java.math.BigDecimal"/>
+	<field name="cinemaId" class="java.util.UUID"/>
+	<field name="snackId" class="java.util.UUID"/>
+	<field name="totalQuantity" class="java.lang.Long"/>
+	<field name="totalAmount" class="java.math.BigDecimal"/>
+	<field name="snack" class="com.sap.sales_service.sale.domain.dtos.SnackView"/>
+	<title height="110">
+		<element kind="textField" uuid="085db9f1-82f8-4895-8bad-4c7c595a2f8c" x="0" y="10" width="515" height="20" fontSize="16.0" bold="true" hTextAlign="Center">
+			<expression><![CDATA[$P{reportTitle}]]></expression>
+		</element>
+		<element kind="textField" uuid="1d9f6b0b-80f8-4269-b2d2-95889e0ccea3" x="0" y="40" width="515" height="15" fontSize="10.0" italic="true" hTextAlign="Center">
+			<expression><![CDATA["Periodo: " + ($P{from} == null ? "" : $P{from}.toString()) + " al " + ($P{to} == null ? "" : $P{to}.toString())]]></expression>
+		</element>
+		<element kind="textField" uuid="7c77c0ae-8e82-46be-8cf5-7d3b47b15143" x="0" y="60" width="515" height="15" fontSize="10.0" hTextAlign="Center">
+			<expression><![CDATA["Cine: " + ($P{cinema} == null ? "Desconocido" : $P{cinema})]]></expression>
+		</element>
+		<element kind="textField" uuid="085d135f-7aa6-4bfe-ae64-f7161d8aae70" x="0" y="80" width="515" height="15" fontSize="10.0" hTextAlign="Center">
+			<expression><![CDATA["Total recaudado: " + ($P{totalAmount} == null ? "0" : $P{totalAmount}.toString())]]></expression>
+		</element>
+	</title>
+	<columnHeader height="20">
+		<element kind="staticText" uuid="7ba2cd99-b48d-4fed-9e7f-5718f7fec1b4" x="0" y="0" width="215" height="15" bold="true" hTextAlign="Left">
+			<text><![CDATA[Snack]]></text>
+		</element>
+		<element kind="staticText" uuid="d2dce482-3c10-496a-a31c-9a9eb6f86c2f" x="215" y="0" width="100" height="15" bold="true" hTextAlign="Right">
+			<text><![CDATA[Cantidad]]></text>
+		</element>
+		<element kind="staticText" uuid="d9cba3e9-4aa4-4bd6-a52e-82cfe687c3c9" x="315" y="0" width="200" height="15" bold="true" hTextAlign="Right">
+			<text><![CDATA[Total vendido]]></text>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<element kind="textField" uuid="f8e151a8-125c-4fc7-83d8-3a1d7d0c3c36" x="0" y="0" width="215" height="15" fontSize="8.0" textAdjust="ScaleFont" hTextAlign="Left" vTextAlign="Middle">
+				<expression><![CDATA[$F{snack} == null ? "Sin información" : $F{snack}.name()]]></expression>
+			</element>
+			<element kind="textField" uuid="01d24768-1fe4-4eb0-a938-f6d171b2e44e" x="215" y="0" width="100" height="15" fontSize="8.0" textAdjust="ScaleFont" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{totalQuantity} == null ? "0" : $F{totalQuantity}.toString()]]></expression>
+			</element>
+			<element kind="textField" uuid="c887650c-2ba4-4721-b407-d8fa8d88afce" x="315" y="0" width="200" height="15" fontSize="8.0" textAdjust="ScaleFont" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{totalAmount} == null ? "-" : $F{totalAmount}.toString()]]></expression>
+			</element>
+		</band>
+	</detail>
+	<pageFooter height="20">
+		<element kind="textField" uuid="92e1460c-6f4c-4c30-96b5-9ad1a969d2ed" x="415" y="0" width="100" height="15" fontSize="9.0" italic="true" hTextAlign="Right">
+			<expression><![CDATA["Página " + $V{PAGE_NUMBER}]]></expression>
+		</element>
+	</pageFooter>
+</jasperReport>
