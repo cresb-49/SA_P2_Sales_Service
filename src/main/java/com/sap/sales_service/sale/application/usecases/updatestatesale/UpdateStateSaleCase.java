@@ -1,6 +1,6 @@
 package com.sap.sales_service.sale.application.usecases.updatestatesale;
 
-import com.sap.common_lib.exception.NonRetryableBusinessException;
+import com.sap.common_lib.exception.NotFoundException;
 import com.sap.sales_service.sale.application.input.UpdateStateSaleCasePort;
 import com.sap.sales_service.sale.application.ouput.*;
 import com.sap.sales_service.sale.application.usecases.updatestatesale.dtos.UpdateStateSaleDTO;
@@ -25,7 +25,7 @@ public class UpdateStateSaleCase implements UpdateStateSaleCasePort {
     @Override
     public void updateStateSale(UpdateStateSaleDTO updateStateSaleDTO) {
         Sale sale = findSalePort.findById(updateStateSaleDTO.saleId()).orElseThrow(
-                () -> new NonRetryableBusinessException("Sale not found")
+                () -> new NotFoundException("La venta con id " + updateStateSaleDTO.saleId() + " no existe.")
         );
         if (updateStateSaleDTO.paid()) {
             sale.markAsPaid();
