@@ -66,7 +66,7 @@ public class SnackReportByCinemaCase implements SnackReportByCinemaCasePort {
         params.put("to", to);
         params.put("cinema", report.cinema() == null ? "Desconocido" : report.cinema().name());
         params.put("totalAmount", report.totalAmount() == null ? java.math.BigDecimal.ZERO : report.totalAmount());
-        return jasperReportService.toPdf(REPORT_TEMPLATE, data, params);
+        return jasperReportService.toPdfCompiled(REPORT_TEMPLATE, data, params);
     }
 
     private List<Map<String, Object>> buildFlatData(List<SnackSalesByCinemaDTO> items) {

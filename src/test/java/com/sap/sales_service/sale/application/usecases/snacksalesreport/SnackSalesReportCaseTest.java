@@ -123,7 +123,7 @@ class SnackSalesReportCaseTest {
         )).thenReturn(summary);
         when(snackSalesReportFactory.withSnackView(summary)).thenReturn(enriched);
         when(findCinemaPort.findById(CINEMA_ID)).thenReturn(cinema);
-        when(jasperReportService.toPdf(
+        when(jasperReportService.toPdfCompiled(
                 eq("snack_sales_report"),
                 org.mockito.ArgumentMatchers.anyCollection(),
                 org.mockito.ArgumentMatchers.anyMap()))
@@ -137,7 +137,7 @@ class SnackSalesReportCaseTest {
 
         // Assert
         assertThat(result).isEqualTo(pdf);
-        verify(jasperReportService).toPdf(eq("snack_sales_report"), dataCaptor.capture(), paramsCaptor.capture());
+        verify(jasperReportService).toPdfCompiled(eq("snack_sales_report"), dataCaptor.capture(), paramsCaptor.capture());
 
         Map<String, Object> params = paramsCaptor.getValue();
         assertThat(params).containsEntry("reportTitle", "Reporte de Ventas de Snacks");

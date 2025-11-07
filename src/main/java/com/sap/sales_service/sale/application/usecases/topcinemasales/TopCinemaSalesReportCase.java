@@ -53,7 +53,7 @@ public class TopCinemaSalesReportCase implements TopCinemaSalesReportCasePort {
         params.put("from", from);
         params.put("to", to);
         params.put("limit", topLimit);
-        return jasperReportService.toPdf(REPORT_TEMPLATE, data, params);
+        return jasperReportService.toPdfCompiled(REPORT_TEMPLATE, data, params);
     }
 
     private List<Map<String, Object>> buildFlatData(List<CinemaSalesSummaryDTO> cinemas) {

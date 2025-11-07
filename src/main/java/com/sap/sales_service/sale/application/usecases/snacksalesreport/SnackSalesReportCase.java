@@ -65,7 +65,7 @@ public class SnackSalesReportCase implements SnackSalesReportCasePort {
         params.put("to", to);
         params.put("cinema", report.cinema() == null ? "Todos" : report.cinema().name());
         params.put("totalQuantity", report.totalQuantity() == null ? 0L : report.totalQuantity());
-        return jasperReportService.toPdf(REPORT_TEMPLATE, data, params);
+        return jasperReportService.toPdfCompiled(REPORT_TEMPLATE, data, params);
     }
 
     private List<Map<String, Object>> buildFlatData(List<SnackSalesSummaryDTO> snacks) {

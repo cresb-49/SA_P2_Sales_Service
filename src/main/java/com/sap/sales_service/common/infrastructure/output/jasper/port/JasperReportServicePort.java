@@ -5,5 +5,11 @@ import java.util.Map;
 
 public interface JasperReportServicePort {
 
-    byte[] toPdf(String template, Collection<? extends Map<String, ?>> data, Map<String, Object> params);
+    byte[] toPdfCompiled(String template, Collection<? extends Map<String, ?>> data, Map<String, Object> params);
+
+    byte[] toPdfNonCompiled(String template, Collection<? extends Map<String, ?>> data, Map<String, Object> params);
+
+    default byte[] toPdf(String template, Collection<? extends Map<String, ?>> data, Map<String, Object> params) {
+        return toPdfCompiled(template, data, params);
+    }
 }

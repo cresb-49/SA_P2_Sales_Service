@@ -120,7 +120,7 @@ class TicketSalesReportCaseTest {
                 TO.atTime(LocalTime.of(23, 59, 59))
         )).thenReturn(rawSummaries);
         when(ticketSalesReportFactory.attachDetails(rawSummaries)).thenReturn(enriched);
-        when(jasperReportService.toPdf(
+        when(jasperReportService.toPdfCompiled(
                 eq("ticket_sales_report"),
                 org.mockito.ArgumentMatchers.anyCollection(),
                 org.mockito.ArgumentMatchers.anyMap()))
@@ -134,7 +134,7 @@ class TicketSalesReportCaseTest {
 
         // Assert
         assertThat(result).isEqualTo(pdf);
-        verify(jasperReportService).toPdf(eq("ticket_sales_report"), dataCaptor.capture(), paramsCaptor.capture());
+        verify(jasperReportService).toPdfCompiled(eq("ticket_sales_report"), dataCaptor.capture(), paramsCaptor.capture());
 
         Map<String, Object> params = paramsCaptor.getValue();
         assertThat(params).containsEntry("reportTitle", "Reporte de Ventas de Boletos");

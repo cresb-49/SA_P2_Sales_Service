@@ -60,7 +60,7 @@ public class TicketSalesReportCase implements TicketSalesReportCasePort {
         params.put("from", from);
         params.put("to", to);
         params.put("totalTickets", report.totalTickets() == null ? 0L : report.totalTickets());
-        return jasperReportService.toPdf(REPORT_TEMPLATE, data, params);
+        return jasperReportService.toPdfCompiled(REPORT_TEMPLATE, data, params);
     }
 
     private List<Map<String, Object>> buildFlatData(List<TicketSalesByFunctionDTO> functions) {

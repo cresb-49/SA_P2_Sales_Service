@@ -103,7 +103,7 @@ class TopCinemaSalesReportCaseTest {
                 3
         )).thenReturn(raw);
         when(topCinemaSalesReportFactory.withCinema(raw)).thenReturn(enriched);
-        when(jasperReportService.toPdf(
+        when(jasperReportService.toPdfCompiled(
                 eq("top_cinema_sales_report"),
                 org.mockito.ArgumentMatchers.anyCollection(),
                 org.mockito.ArgumentMatchers.anyMap()))
@@ -117,7 +117,7 @@ class TopCinemaSalesReportCaseTest {
 
         // Assert
         assertThat(result).isEqualTo(pdf);
-        verify(jasperReportService).toPdf(eq("top_cinema_sales_report"), dataCaptor.capture(), paramsCaptor.capture());
+        verify(jasperReportService).toPdfCompiled(eq("top_cinema_sales_report"), dataCaptor.capture(), paramsCaptor.capture());
         Map<String, Object> params = paramsCaptor.getValue();
         assertThat(params).containsEntry("reportTitle", "Top de Cines por Ventas");
         assertThat(params).containsEntry("from", FROM);
