@@ -27,7 +27,7 @@ public class JasperReportService implements JasperReportServicePort {
             try (var in = getClass().getResourceAsStream("/reports/" + t + ".jrxml")) {
                 return JasperCompileManager.compileReport(in);
             } catch (Exception e) {
-                throw new IllegalStateException("No se pudo compilar " + t, e);
+                throw new IllegalStateException("No se pudo compilar " + t + ",message: " + e.getMessage(), e);
             }
         });
     }
@@ -43,7 +43,7 @@ public class JasperReportService implements JasperReportServicePort {
                 return out.toByteArray();
             }
         } catch (Exception e) {
-            throw new RuntimeException("Error generando PDF", e);
+            throw new RuntimeException("Error generando PDF, message: " + e.getMessage(), e);
         }
     }
 }
