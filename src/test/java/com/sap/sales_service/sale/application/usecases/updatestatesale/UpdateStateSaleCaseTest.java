@@ -1,6 +1,7 @@
 package com.sap.sales_service.sale.application.usecases.updatestatesale;
 
 import com.sap.common_lib.exception.NonRetryableBusinessException;
+import com.sap.common_lib.exception.NotFoundException;
 import com.sap.sales_service.sale.application.ouput.FindSaleLineTicketPort;
 import com.sap.sales_service.sale.application.ouput.FindSalePort;
 import com.sap.sales_service.sale.application.ouput.SaveSaleLineTicketPort;
@@ -72,8 +73,7 @@ class UpdateStateSaleCaseTest {
 
         // when / then
         assertThatThrownBy(() -> useCase.updateStateSale(dto))
-                .isInstanceOf(NonRetryableBusinessException.class)
-                .hasMessageContaining("Sale not found");
+                .isInstanceOf(NotFoundException.class);
 
         verifyNoInteractions(saveSalePort, sendNotificationPort, findSaleLineTicketPort, saveSaleLineTicketPort);
     }
