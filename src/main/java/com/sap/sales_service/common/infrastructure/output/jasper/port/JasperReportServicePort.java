@@ -5,5 +5,5 @@ import java.util.Map;
 
 public interface JasperReportServicePort {
 
-    byte[] toPdf(String template, Collection<?> data, Map<String, Object> params);
+    byte[] toPdf(String template, Collection<? extends Map<String, ?>> data, Map<String, Object> params);
 }

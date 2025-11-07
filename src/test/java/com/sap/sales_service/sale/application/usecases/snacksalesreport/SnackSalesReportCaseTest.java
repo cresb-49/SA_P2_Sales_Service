@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -122,9 +123,13 @@ class SnackSalesReportCaseTest {
         )).thenReturn(summary);
         when(snackSalesReportFactory.withSnackView(summary)).thenReturn(enriched);
         when(findCinemaPort.findById(CINEMA_ID)).thenReturn(cinema);
-        when(jasperReportService.toPdf(eq("snack_sales_report"), eq(enriched), org.mockito.ArgumentMatchers.anyMap()))
+        when(jasperReportService.toPdf(
+                eq("snack_sales_report"),
+                org.mockito.ArgumentMatchers.anyCollection(),
+                org.mockito.ArgumentMatchers.anyMap()))
                 .thenReturn(pdf);
 
+        ArgumentCaptor<Collection<Map<String, ?>>> dataCaptor = ArgumentCaptor.forClass(Collection.class);
         ArgumentCaptor<Map<String, Object>> paramsCaptor = ArgumentCaptor.forClass(Map.class);
 
         // Act
@@ -132,7 +137,7 @@ class SnackSalesReportCaseTest {
 
         // Assert
         assertThat(result).isEqualTo(pdf);
-        verify(jasperReportService).toPdf(eq("snack_sales_report"), eq(enriched), paramsCaptor.capture());
+        verify(jasperReportService).toPdf(eq("snack_sales_report"), dataCaptor.capture(), paramsCaptor.capture());
 
         Map<String, Object> params = paramsCaptor.getValue();
         assertThat(params).containsEntry("reportTitle", "Reporte de Ventas de Snacks");
@@ -140,5 +145,17 @@ class SnackSalesReportCaseTest {
         assertThat(params).containsEntry("to", TO);
         assertThat(params).containsEntry("cinema", cinema.name());
         assertThat(params).containsEntry("totalQuantity", 3L);
+
+        Collection<Map<String, ?>> data = dataCaptor.getValue();
+        assertThat(data).hasSize(1);
+        Map<String, ?> row = data.iterator().next();
+        BigDecimal unitPrice = enriched.getFirst().snack().price();
+        Long quantity = enriched.getFirst().totalQuantity();
+        BigDecimal lineTotal = unitPrice.multiply(BigDecimal.valueOf(quantity));
+        assertThat(row.get("snackId")).isEqualTo(enriched.getFirst().snackId());
+        assertThat(row.get("snackName")).isEqualTo(enriched.getFirst().snack().name());
+        assertThat(row.get("unitPrice")).isEqualTo(unitPrice);
+        assertThat(row.get("totalQuantity")).isEqualTo(quantity);
+        assertThat(row.get("lineTotal")).isEqualTo(lineTotal);
     }
 }

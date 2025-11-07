@@ -11,9 +11,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -56,7 +58,7 @@ public class SnackSalesReportCase implements SnackSalesReportCasePort {
     @Override
     public byte[] generateReportFile(LocalDate from, LocalDate to, UUID cinemaId) {
         SnackSalesReportDTO report = report(from, to, cinemaId);
-        var data = report.snacks();
+        var data = buildFlatData(report.snacks());
         var params = new HashMap<String, Object>();
         params.put("reportTitle", REPORT_TITLE);
         params.put("from", from);
@@ -64,5 +66,24 @@ public class SnackSalesReportCase implements SnackSalesReportCasePort {
         params.put("cinema", report.cinema() == null ? "Todos" : report.cinema().name());
         params.put("totalQuantity", report.totalQuantity() == null ? 0L : report.totalQuantity());
         return jasperReportService.toPdf(REPORT_TEMPLATE, data, params);
+    }
+
+    private List<Map<String, Object>> buildFlatData(List<SnackSalesSummaryDTO> snacks) {
+        if (snacks == null) {
+            return List.of();
+        }
+        return snacks.stream()
+                .map(summary -> {
+                    Map<String, Object> row = new HashMap<>();
+                    row.put("snackId", summary.snackId());
+                    row.put("snackName", summary.snack() == null ? null : summary.snack().name());
+                    BigDecimal unitPrice = summary.snack() == null ? null : summary.snack().price();
+                    Long quantity = summary.totalQuantity() == null ? 0L : summary.totalQuantity();
+                    row.put("unitPrice", unitPrice);
+                    row.put("totalQuantity", quantity);
+                    row.put("lineTotal", unitPrice == null ? null : unitPrice.multiply(BigDecimal.valueOf(quantity)));
+                    return row;
+                })
+                .toList();
     }
 }

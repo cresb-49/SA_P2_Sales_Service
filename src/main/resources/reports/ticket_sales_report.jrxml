@@ -3,13 +3,11 @@
 	<parameter name="to" class="java.time.LocalDate"/>
 	<parameter name="reportTitle" class="java.lang.String"/>
 	<parameter name="totalTickets" class="java.lang.Long"/>
-	<field name="functionId" class="java.util.UUID"/>
-	<field name="cinemaId" class="java.util.UUID"/>
-	<field name="cinemaRoomId" class="java.util.UUID"/>
-	<field name="movieId" class="java.util.UUID"/>
+	<field name="movieTitle" class="java.lang.String"/>
+	<field name="cinemaName" class="java.lang.String"/>
+	<field name="hallName" class="java.lang.String"/>
+	<field name="showtimeStart" class="java.lang.String"/>
 	<field name="ticketsSold" class="java.lang.Long"/>
-	<field name="showtime" class="com.sap.sales_service.sale.domain.dtos.reports.views.TicketShowtimeReportView"/>
-	<field name="movie" class="com.sap.sales_service.sale.domain.dtos.reports.views.MovieSummaryView"/>
 	<title height="110">
 		<element kind="textField" uuid="6f2da32b-a7de-4f2c-bfa3-3a53c641942d" x="0" y="10" width="515" height="20" fontSize="16.0" bold="true" hTextAlign="Center">
 			<expression><![CDATA[$P{reportTitle}]]></expression>
@@ -41,16 +39,16 @@
 	<detail>
 		<band height="20">
 			<element kind="textField" uuid="24a0589b-e360-43f6-9d14-3b698f67006e" x="0" y="0" width="140" height="15" fontSize="8.0" textAdjust="ScaleFont" hTextAlign="Left" vTextAlign="Middle">
-				<expression><![CDATA[$F{movie} == null ? "-" : $F{movie}.title()]]></expression>
+				<expression><![CDATA[$F{movieTitle} == null || $F{movieTitle}.isEmpty() ? "-" : $F{movieTitle}]]></expression>
 			</element>
 			<element kind="textField" uuid="c9c723b8-f2ba-4b03-aa3b-df1ca31d7562" x="140" y="0" width="115" height="15" fontSize="8.0" textAdjust="ScaleFont" hTextAlign="Left" vTextAlign="Middle">
-				<expression><![CDATA[$F{showtime} == null || $F{showtime}.cinema() == null ? "-" : $F{showtime}.cinema().name()]]></expression>
+				<expression><![CDATA[$F{cinemaName} == null || $F{cinemaName}.isEmpty() ? "-" : $F{cinemaName}]]></expression>
 			</element>
 			<element kind="textField" uuid="619ebb09-1d9d-43b9-bceb-d2ac7863023f" x="255" y="0" width="80" height="15" fontSize="8.0" textAdjust="ScaleFont" hTextAlign="Left" vTextAlign="Middle">
-				<expression><![CDATA[$F{showtime} == null ? "-" : $F{showtime}.hallName()]]></expression>
+				<expression><![CDATA[$F{hallName} == null || $F{hallName}.isEmpty() ? "-" : $F{hallName}]]></expression>
 			</element>
 			<element kind="textField" uuid="aba3acc7-12a6-4703-9138-9af84ca0fa15" x="335" y="0" width="90" height="15" fontSize="8.0" textAdjust="ScaleFont" hTextAlign="Left" vTextAlign="Middle">
-				<expression><![CDATA[$F{showtime} == null || $F{showtime}.startTime() == null ? "-" : $F{showtime}.startTime().format(java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"))]]></expression>
+				<expression><![CDATA[$F{showtimeStart} == null || $F{showtimeStart}.isEmpty() ? "-" : $F{showtimeStart}]]></expression>
 			</element>
 			<element kind="textField" uuid="4432bdb0-1adc-4113-897f-e9d872916c3a" x="425" y="0" width="90" height="15" fontSize="8.0" textAdjust="ScaleFont" hTextAlign="Right" vTextAlign="Middle">
 				<expression><![CDATA[$F{ticketsSold} == null ? "0" : $F{ticketsSold}.toString()]]></expression>

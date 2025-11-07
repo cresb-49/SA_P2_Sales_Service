@@ -6,7 +6,7 @@
 	<field name="cinemaId" class="java.util.UUID"/>
 	<field name="totalAmount" class="java.math.BigDecimal"/>
 	<field name="totalSales" class="java.lang.Long"/>
-	<field name="cinema" class="com.sap.sales_service.sale.domain.dtos.CinemaView"/>
+	<field name="cinemaName" class="java.lang.String"/>
 	<title height="95">
 		<element kind="textField" uuid="c3d9086b-78b1-4f1a-a1d4-5cb799f9d5af" x="0" y="10" width="515" height="20" fontSize="16.0" bold="true" hTextAlign="Center">
 			<expression><![CDATA[$P{reportTitle}]]></expression>
@@ -38,7 +38,7 @@
 				<expression><![CDATA[$V{REPORT_COUNT}.toString()]]></expression>
 			</element>
 			<element kind="textField" uuid="f30ef1a5-479d-4ec5-bd05-7ebe4cbfb78c" x="60" y="0" width="220" height="15" fontSize="8.0" textAdjust="ScaleFont" hTextAlign="Left" vTextAlign="Middle">
-				<expression><![CDATA[$F{cinema} == null ? "-" : $F{cinema}.name()]]></expression>
+				<expression><![CDATA[$F{cinemaName} == null || $F{cinemaName}.isEmpty() ? "-" : $F{cinemaName}]]></expression>
 			</element>
 			<element kind="textField" uuid="ef81f9a8-3df1-4ee8-94d4-6b3711c972a7" x="280" y="0" width="115" height="15" fontSize="8.0" textAdjust="ScaleFont" hTextAlign="Right" vTextAlign="Middle">
 				<expression><![CDATA[$F{totalAmount} == null ? "-" : $F{totalAmount}.toString()]]></expression>

@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -126,9 +127,13 @@ class SnackReportByCinemaCaseTest {
         )).thenReturn(base);
         when(snackReportByCinemaFactory.withSnackView(base)).thenReturn(enriched);
         when(findCinemaPort.findById(CINEMA_ID)).thenReturn(cinema);
-        when(jasperReportService.toPdf(eq("snack_report_by_cinema"), eq(enriched), org.mockito.ArgumentMatchers.anyMap()))
+        when(jasperReportService.toPdf(
+                eq("snack_report_by_cinema"),
+                org.mockito.ArgumentMatchers.anyCollection(),
+                org.mockito.ArgumentMatchers.anyMap()))
                 .thenReturn(pdf);
 
+        ArgumentCaptor<Collection<Map<String, ?>>> dataCaptor = ArgumentCaptor.forClass(Collection.class);
         ArgumentCaptor<Map<String, Object>> paramsCaptor = ArgumentCaptor.forClass(Map.class);
 
         // Act
@@ -136,7 +141,7 @@ class SnackReportByCinemaCaseTest {
 
         // Assert
         assertThat(result).isEqualTo(pdf);
-        verify(jasperReportService).toPdf(eq("snack_report_by_cinema"), eq(enriched), paramsCaptor.capture());
+        verify(jasperReportService).toPdf(eq("snack_report_by_cinema"), dataCaptor.capture(), paramsCaptor.capture());
 
         Map<String, Object> params = paramsCaptor.getValue();
         assertThat(params).containsEntry("reportTitle", "Ventas de Snacks por Cine");
@@ -144,5 +149,14 @@ class SnackReportByCinemaCaseTest {
         assertThat(params).containsEntry("to", TO);
         assertThat(params).containsEntry("cinema", cinema.name());
         assertThat(params).containsEntry("totalAmount", new BigDecimal("20.00"));
+
+        Collection<Map<String, ?>> data = dataCaptor.getValue();
+        assertThat(data).hasSize(1);
+        Map<String, ?> row = data.iterator().next();
+        assertThat(row.get("cinemaId")).isEqualTo(CINEMA_ID);
+        assertThat(row.get("snackId")).isEqualTo(enriched.getFirst().snackId());
+        assertThat(row.get("snackName")).isEqualTo(enriched.getFirst().snack().name());
+        assertThat(row.get("totalQuantity")).isEqualTo(2L);
+        assertThat(row.get("totalAmount")).isEqualTo(new BigDecimal("20.00"));
     }
 }

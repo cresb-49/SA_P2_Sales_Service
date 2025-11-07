@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -119,9 +120,13 @@ class TicketSalesReportCaseTest {
                 TO.atTime(LocalTime.of(23, 59, 59))
         )).thenReturn(rawSummaries);
         when(ticketSalesReportFactory.attachDetails(rawSummaries)).thenReturn(enriched);
-        when(jasperReportService.toPdf(eq("ticket_sales_report"), eq(enriched), org.mockito.ArgumentMatchers.anyMap()))
+        when(jasperReportService.toPdf(
+                eq("ticket_sales_report"),
+                org.mockito.ArgumentMatchers.anyCollection(),
+                org.mockito.ArgumentMatchers.anyMap()))
                 .thenReturn(pdf);
 
+        ArgumentCaptor<Collection<Map<String, ?>>> dataCaptor = ArgumentCaptor.forClass(Collection.class);
         ArgumentCaptor<Map<String, Object>> paramsCaptor = ArgumentCaptor.forClass(Map.class);
 
         // Act
@@ -129,12 +134,21 @@ class TicketSalesReportCaseTest {
 
         // Assert
         assertThat(result).isEqualTo(pdf);
-        verify(jasperReportService).toPdf(eq("ticket_sales_report"), eq(enriched), paramsCaptor.capture());
+        verify(jasperReportService).toPdf(eq("ticket_sales_report"), dataCaptor.capture(), paramsCaptor.capture());
 
         Map<String, Object> params = paramsCaptor.getValue();
         assertThat(params).containsEntry("reportTitle", "Reporte de Ventas de Boletos");
         assertThat(params).containsEntry("from", FROM);
         assertThat(params).containsEntry("to", TO);
         assertThat(params).containsEntry("totalTickets", 15L);
+
+        Collection<Map<String, ?>> rows = dataCaptor.getValue();
+        assertThat(rows).hasSize(1);
+        Map<String, ?> row = rows.iterator().next();
+        assertThat(row.get("movieTitle")).isEqualTo("Matrix");
+        assertThat(row.get("cinemaName")).isEqualTo("Cinema UX");
+        assertThat(row.get("hallName")).isEqualTo("Sala 1");
+        assertThat(row.get("showtimeStart")).isEqualTo("10-03-2024 18:00");
+        assertThat(row.get("ticketsSold")).isEqualTo(15L);
     }
 }

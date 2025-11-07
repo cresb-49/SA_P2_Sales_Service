@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -46,11 +47,28 @@ public class TopCinemaSalesReportCase implements TopCinemaSalesReportCasePort {
     public byte[] generateReportFile(LocalDate from, LocalDate to, int limit) {
         int topLimit = limit <= 0 ? 5 : limit;
         TopCinemaSalesReportDTO report = report(from, to, topLimit);
+        var data = buildFlatData(report.cinemas());
         var params = new HashMap<String, Object>();
         params.put("reportTitle", REPORT_TITLE);
         params.put("from", from);
         params.put("to", to);
         params.put("limit", topLimit);
-        return jasperReportService.toPdf(REPORT_TEMPLATE, report.cinemas(), params);
+        return jasperReportService.toPdf(REPORT_TEMPLATE, data, params);
+    }
+
+    private List<Map<String, Object>> buildFlatData(List<CinemaSalesSummaryDTO> cinemas) {
+        if (cinemas == null) {
+            return List.of();
+        }
+        return cinemas.stream()
+                .map(summary -> {
+                    Map<String, Object> row = new HashMap<>();
+                    row.put("cinemaId", summary.cinemaId());
+                    row.put("cinemaName", summary.cinema() == null ? null : summary.cinema().name());
+                    row.put("totalAmount", summary.totalAmount());
+                    row.put("totalSales", summary.totalSales() == null ? 0L : summary.totalSales());
+                    return row;
+                })
+                .toList();
     }
 }

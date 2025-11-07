@@ -8,7 +8,7 @@
 	<field name="snackId" class="java.util.UUID"/>
 	<field name="totalQuantity" class="java.lang.Long"/>
 	<field name="totalAmount" class="java.math.BigDecimal"/>
-	<field name="snack" class="com.sap.sales_service.sale.domain.dtos.SnackView"/>
+	<field name="snackName" class="java.lang.String"/>
 	<title height="110">
 		<element kind="textField" uuid="085db9f1-82f8-4895-8bad-4c7c595a2f8c" x="0" y="10" width="515" height="20" fontSize="16.0" bold="true" hTextAlign="Center">
 			<expression><![CDATA[$P{reportTitle}]]></expression>
@@ -37,7 +37,7 @@
 	<detail>
 		<band height="20">
 			<element kind="textField" uuid="f8e151a8-125c-4fc7-83d8-3a1d7d0c3c36" x="0" y="0" width="215" height="15" fontSize="8.0" textAdjust="ScaleFont" hTextAlign="Left" vTextAlign="Middle">
-				<expression><![CDATA[$F{snack} == null ? "Sin información" : $F{snack}.name()]]></expression>
+				<expression><![CDATA[$F{snackName} == null || $F{snackName}.isEmpty() ? "Sin información" : $F{snackName}]]></expression>
 			</element>
 			<element kind="textField" uuid="01d24768-1fe4-4eb0-a938-f6d171b2e44e" x="215" y="0" width="100" height="15" fontSize="8.0" textAdjust="ScaleFont" hTextAlign="Right" vTextAlign="Middle">
 				<expression><![CDATA[$F{totalQuantity} == null ? "0" : $F{totalQuantity}.toString()]]></expression>
